@@ -26,7 +26,7 @@ class NumberPadCell: UICollectionViewCell {
     public func configure(with numPadButton: NumPadButton) {
         self.numPadButton = numPadButton
         self.titleLabel.text = numPadButton.title
-        self.backgroundColor = .systemGray5
+        self.backgroundColor = numPadButton.color
         
         switch numPadButton {
         case .allClear:
@@ -36,6 +36,8 @@ class NumberPadCell: UICollectionViewCell {
         }
         self.setupUI()
     }
+
+
     // MARK: - UI Setup
     private func setupUI() {
         self.addSubview(titleLabel)

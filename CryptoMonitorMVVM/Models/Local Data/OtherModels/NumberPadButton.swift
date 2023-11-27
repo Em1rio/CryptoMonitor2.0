@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum NumPadButton {
     case allClear
@@ -39,4 +40,16 @@ extension NumPadButton {
             return int.description
         }
     }
+    var color: UIColor {
+        switch self {
+        case .allClear, .decimal, .number:
+            return .systemGray5
+        }
+    }
+//    var selectedColor: UIColor? {
+//        switch self {
+//        case .allClear, .decimal, .number:
+//            return .white
+//        }
+//    }
 }

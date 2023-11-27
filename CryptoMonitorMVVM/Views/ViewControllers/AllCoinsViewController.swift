@@ -31,15 +31,17 @@ final class AllCoinsViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-
-        
-        viewModel.fetchData()
         setupTableView()
         setupIndicator()
         bindViewModel()
+        viewModel.loadData()
+        
+        
 
 
         
@@ -54,6 +56,13 @@ final class AllCoinsViewController: UIViewController {
     // MARK: - Actions
 
     private func bindViewModel() {
+        viewModel.isBadConnection.bind { [weak self] isBadConnection in
+            guard let self else {return}
+            DispatchQueue.main.async {
+                self.showNoInternetConnectionAlert()
+            }
+        }
+        
         viewModel.isLoading.bind { [weak self] isLoading in
             guard let self, let isLoading else {return}
             DispatchQueue.main.async {
@@ -65,6 +74,15 @@ final class AllCoinsViewController: UIViewController {
             self.cellDataSource = AllCoinsCellModel
             self.reloadData()
         }
+    }
+    private func checkInternetConnection() {
+        
+    }
+    private func showNoInternetConnectionAlert() {
+        let alert = UIAlertController(
+            title: "Нет соединения", message: "Требуется подключение к интернету для загрузки данных", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 
     

@@ -13,6 +13,8 @@ protocol NetworkManagerProtocol {
 }
 
 struct NetworkManager: NetworkManagerProtocol {
+    // MARK: - Variables
+    
     let baseURL = "https://api.coinlore.net/api/"
     
     func fetchCoins(response: @escaping([Datum]?, NetworkError?)-> Void) {

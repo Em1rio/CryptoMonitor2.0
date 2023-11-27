@@ -10,6 +10,7 @@ import RealmSwift
 
 protocol DBManagerProtocol {
     func saveDataFromApi(_ data: AllCoinsDBModel)
+    func fetchFromDatabase() -> [AllCoinsDBModel]?
     func getRealmQuery<T: Object, V>(forType type: T.Type, where keyPath: KeyPath<T, V>, equals value: V) -> Results<T>
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128)
     func saveQuickAccessCoinsToUserDefaults(_ coins: [QuickAccessCoins])
@@ -19,9 +20,11 @@ protocol DBManagerProtocol {
 }
 
 struct DBManager: DBManagerProtocol {
+    // MARK: - Variables
+    
     private(set) var realm: Realm
     private let quickAccessCoinsKey = "QuickAccessCoinsKey"
-    
+    // MARK: - Init
     init() {
         // Инициализация Realm
         do { realm = try Realm() } catch {
@@ -29,7 +32,11 @@ struct DBManager: DBManagerProtocol {
         }
     }
     
-    func saveDataFromApi(_ data: AllCoinsDBModel) {
+    //MARK: - Methods for All Coins Screen
+    func saveDataFromApi(_ data: AllCoinsDBModel){
+        saveData(data)
+    }
+    private func saveData(_ data: AllCoinsDBModel) {
         do {
             try realm.write {
                 realm.add(data, update: .modified)
@@ -38,6 +45,28 @@ struct DBManager: DBManagerProtocol {
             print("Ошибка при сохранении объекта: \(error)")
         }
     }
+    func fetchFromDatabase() -> [AllCoinsDBModel]? {
+        fetchData()
+    }
+    
+    private func fetchData() -> [AllCoinsDBModel]? {
+        let coins = realm.objects(AllCoinsDBModel.self)
+        return coins.isEmpty ? nil : Array(coins)
+    }
+    
+    
+    //MARK: - Methods for Main Screen
+    
+    
+    /// Метод для записи транзакции в базу данных
+    /// - Parameters:
+    ///   - isPurchase: Тип транзакции для идентификации в коде
+    ///   - coinId: ID криптовалюты для обращения к API
+    ///   - coinTiker: Торговый тикер криптовалюты (BTC, ETH, USDT и тд)
+    ///   - coinsName: Название криптовалюты
+    ///   - transaction: String значение Покупка или Продажа. Заполняется автоматически
+    ///   - howManyValue: Колчество монет
+    ///   - costValue: Цена по которой произвелась транзакция
     
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128) {
         let value = EveryBuying(value: ["\(coinsName)", transaction, howManyValue, costValue])
@@ -119,12 +148,11 @@ struct DBManager: DBManagerProtocol {
             QuickAccessCoins(nameCoin: "Bitcoin", tiker: "BTC", id: "90"),
             QuickAccessCoins(nameCoin: "Ethereum", tiker: "ETH", id: "80"),
             QuickAccessCoins(nameCoin: "Solana", tiker: "SOL", id: "48543"),
-            
         ]
     }
     
     
-    
+    //MARK: - Methods for All Assets & Detail Screen
     
     func getRealmQuery<T: Object, V>(forType type: T.Type, where keyPath: KeyPath<T, V>, equals value: V) -> Results<T> {
         let dbObjects = realm.objects(type)

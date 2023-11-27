@@ -29,10 +29,19 @@ struct AllCoinsCellModel: CoinModel {
         self.tiker = tiker
         self.id = id
     }
+
 }
 
 struct QuickAccessCoins: Codable, CoinModel {
     var nameCoin: String
     var tiker: String
     var id: String
+}
+
+extension AllCoinsCellModel {
+    init(_ dbModel: AllCoinsDBModel) {
+            self.nameCoin = dbModel.name
+            self.tiker = dbModel.symbol
+            self.id = dbModel.id
+        }
 }

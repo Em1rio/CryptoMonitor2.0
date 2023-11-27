@@ -9,6 +9,8 @@ import Foundation
 import Network
 
 final class NetworkMonitor {
+    // MARK: - Variables
+    
     static let shared = NetworkMonitor()
     
     private let queue = DispatchQueue.global(qos: .background)
@@ -22,7 +24,7 @@ final class NetworkMonitor {
         case cellular
         case unknown
     }
-    
+    // MARK: - Lifecycle
     private init() {
         monitor = NWPathMonitor()
     }

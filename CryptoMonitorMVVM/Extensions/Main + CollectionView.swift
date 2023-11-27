@@ -13,7 +13,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         if collectionView == numPadCollectionView {
             return self.viewModel.numPadButtonCells.count
         }else {
-            return self.viewModel.quickAccessCoinsCells.count
+            return self.viewModel.quickAccessCoinsCells.count + 1
         }
         
     }
@@ -88,6 +88,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
                     }
             // Обработка нажатия номерных кнопок
+            //MARK: - TODO: Устранить возможность ввода 0123
                     else if case .number(let number) = buttonCell {
                         if self.viewModel.isFirstInteractionWithNumPad && observableToUpdate.value == "0.0" {
                             observableToUpdate.value = "\(number)"
@@ -113,10 +114,18 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                         return
                     }
                     self?.viewModel.saveToDataBase(AllCoinsCellModel, isPurchase: self?.isPurchase ?? true, quantity: Decimal128(value: quantity), price: Decimal128(value: price))
+                    self?.LabelSelection.selectedSegmentIndex = 0
+                    self?.labelSelectionValueChanged()
+                    self?.quantityLabelObservable.value = "0.0"
+                    self?.priceLabelObservable.value = "0.0"
                 }
             } else {
                 let buttonCell = self.viewModel.quickAccessCoinsCells[indexPath.row - 1]
                 self.viewModel.saveToDataBase(buttonCell, isPurchase: self.isPurchase, quantity: Decimal128(value: quantityLabelObservable.value ?? 0.0), price: Decimal128(value: priceLabelObservable.value ?? 0.0))
+                self.LabelSelection.selectedSegmentIndex = 0
+                self.labelSelectionValueChanged()
+                self.quantityLabelObservable.value = "0.0"
+                self.priceLabelObservable.value = "0.0"
                 
             }
         }

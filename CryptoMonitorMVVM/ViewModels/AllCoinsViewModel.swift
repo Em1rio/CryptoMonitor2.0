@@ -12,8 +12,10 @@ final class AllCoinsViewModel {
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
     var isLoading: Observable<Bool> = Observable(false)
+    var isBadConnection: Observable<Bool> = Observable(false)
     var cellDataSource: Observable<[AllCoinsCellModel]> = Observable(nil)
-    var dataSource: [Datum]?
+    var dataFromAPI: [Datum]?
+    var dataFromDB: [AllCoinsDBModel]?
     
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
@@ -24,15 +26,68 @@ final class AllCoinsViewModel {
 
     //MARK: - Prepare Data for TableView
     func numberOfRow(_ section: Int) -> Int {
-        dataSource?.count ?? 0
+        if let dataDB = dataFromDB, !dataDB.isEmpty {
+            return dataDB.count
+        } else {
+            return dataFromAPI?.count ?? 0
+        }
     }
     
-    func mapCellData() {
-        cellDataSource.value = dataSource?.compactMap({AllCoinsCellModel($0)})
+   private func mapCellData<T>(from data: [T]?) {
+        var cellModels = [AllCoinsCellModel]()
+        
+        if T.self == Datum.self {
+            if let data = data as? [Datum] {
+                cellModels = data.map { AllCoinsCellModel($0) }
+            }
+        } else if T.self == AllCoinsDBModel.self {
+            if let data = data as? [AllCoinsDBModel] {
+                cellModels = data.map { AllCoinsCellModel($0) }
+            }
+        }
+        cellDataSource.value = cellModels
     }
     
+    func loadData() {
+        howOldDB()
+        checkDatabase()
+    }
+    //MARK: - Check if the database is out of date
+    private func howOldDB() {
+         guard NetworkMonitor.shared.isConnected == true else {return}
+         let date = Date()
+         if UserDefaults.standard.object(forKey: "lastUpdate") as? Date == nil {
+             //save
+             UserDefaults.standard.set(date, forKey: "lastUpdate")
+         } else {
+             // read
+             let lastUpdate = UserDefaults.standard.object(forKey: "lastUpdate") as! Date
+             let timeInterval = date.timeIntervalSince(lastUpdate) / 86400
+             // update
+             if timeInterval >= 14 {
+                 UserDefaults.standard.set(date, forKey: "lastUpdate")
+                 fetchData()
+             }
+         }
+     }
+    //MARK: - Check Database for existing data
+    private func checkDatabase() {
+        if let allCoins = dataBaseManager.fetchFromDatabase() {
+                // Если данные есть в базе, загружаем их и обновляем таблицу
+                self.dataFromDB = allCoins
+                self.mapCellData(from: dataFromDB)
+            } else {
+                // Если данных нет в базе, выполняем запрос к сети
+                if NetworkMonitor.shared.isConnected {
+                    fetchData()
+                } else {
+                    isBadConnection.value = true
+                }
+                //MARK: - TODO: Перестать показывать уведомление при появлении соединения без перезагрузки приложения
+            }
+        }
     //MARK: - Fetch Data from API
-    func fetchData() {
+    private func fetchData() {
         isLoading.value = true
         networkManager.fetchCoins { [weak self] AllCoins, error in
             guard let self else {return}
@@ -40,8 +95,8 @@ final class AllCoinsViewModel {
             if error != nil {
                 print("Ошибка при декодировании данных: \(String(describing: error))")
             } else if let AllCoins {
-                self.dataSource = AllCoins
-                self.mapCellData()
+                self.dataFromAPI = AllCoins
+                self.mapCellData(from: self.dataFromAPI)
                 
                 DispatchQueue.main.async {
                 self.loadDataToDB(AllCoins)
@@ -51,7 +106,6 @@ final class AllCoinsViewModel {
         
     }
     private func loadDataToDB(_ allCoins: [Datum]) {
-
         for coin in allCoins {
             let newData = AllCoinsDBModel()
             newData.id = coin.id
@@ -59,7 +113,8 @@ final class AllCoinsViewModel {
             newData.name = coin.name
             dataBaseManager.saveDataFromApi(newData)
         }
-        
     }
+    
+
     
 }
