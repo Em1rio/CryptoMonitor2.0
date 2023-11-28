@@ -20,8 +20,7 @@ final class MainViewModel {
     var isFirstInteractionWithNumPad = true
     var accumulatedValue: Double = 0
     var quickAccessCoinsCells: [QuickAccessCoins] = []
-  //  var isPurchase: Observable<Bool> = Observable(true)
-
+    
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
@@ -29,10 +28,10 @@ final class MainViewModel {
         self.dataBaseManager = dataBaseManager
         loadQuickAccessCoins()
     }
-
-
+    
+    
     // MARK: - CollectionView DataSourse Array
-    //TODO: Изменять цвет при нажатии и вохврат обратно
+    //TODO: Изменять цвет при нажатии и возврат обратно
     let numPadButtonCells: [NumPadButton] = [
         .number(7), .number(8), .number(9),
         .number(4), .number(5), .number(6),
@@ -41,10 +40,10 @@ final class MainViewModel {
     ]
     
     private func loadQuickAccessCoins() {
-            quickAccessCoinsCells = dataBaseManager.loadQuickAccessCoinsFromUserDefaults()
-            cellDataSource.value = quickAccessCoinsCells
-        }
-    //AllCoinsCellModel
+        quickAccessCoinsCells = dataBaseManager.loadQuickAccessCoinsFromUserDefaults()
+        cellDataSource.value = quickAccessCoinsCells
+    }
+    
     func saveToDataBase<T: CoinModel>(_ data: T, isPurchase: Bool, quantity: Decimal128, price: Decimal128) {
         let coinId = data.id
         let coinTiker = data.tiker
@@ -58,8 +57,8 @@ final class MainViewModel {
         }
         dataBaseManager.addTransactionToDatabase(isPurchase: isPurchase, coinId: coinId, coinTiker: coinTiker, coinsName: coinsName, transaction: transaction, howManyValue: quantity, costValue: price)
         let updatedCoins = updateQuickAccessCoins(newCoin: QuickAccessCoins(nameCoin: data.nameCoin, tiker: data.tiker, id: data.id))
-                quickAccessCoinsCells = updatedCoins // Обновление основного массива
-                cellDataSource.value = updatedCoins // Обновление данных для обновления UI
+        quickAccessCoinsCells = updatedCoins // Обновление основного массива
+        cellDataSource.value = updatedCoins // Обновление данных для обновления UI
         dataBaseManager.saveQuickAccessCoinsToUserDefaults(updatedCoins)
         print(cellDataSource)
         
@@ -81,4 +80,42 @@ final class MainViewModel {
         dataBaseManager.saveQuickAccessCoinsToUserDefaults(updatedCoins)
         return updatedCoins
     }
+    
+    func numPadButtonTapped(_ buttonCell: NumPadButton, forSegmentIndex selectedSegmentIndex: Int, observableToUpdate: inout Observable<String>) {
+        if case .allClear = buttonCell {
+            accumulatedValue = 0.0
+            canAddDecimal = true
+            isFirstInteractionWithNumPad = true
+            observableToUpdate.value = "0.0"
+        } else {
+            if observableToUpdate.value?.count ?? 0 < 10 {
+                // Обработка нажатия кнопки дроби
+                if case .decimal = buttonCell {
+                    if canAddDecimal && !(observableToUpdate.value?.contains(".") ?? false) {
+                        if let currentValue = observableToUpdate.value {
+                            observableToUpdate.value = currentValue + "."
+                        }
+                    }
+                }
+                // Обработка нажатия номерных кнопок
+                else if case .number(let number) = buttonCell {
+                    if isFirstInteractionWithNumPad && observableToUpdate.value == "0.0" {
+                        observableToUpdate.value = "\(number)"
+                        isFirstInteractionWithNumPad = false
+                    }  else if observableToUpdate.value == "0" && number != 0 {
+                        observableToUpdate.value = "\(number)"
+                    } else  {
+                        if observableToUpdate.value == "0" && number == 0 {
+                            observableToUpdate.value = "0.0"
+                        } else {
+                            observableToUpdate.value = (observableToUpdate.value ?? "") + "\(number)"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
 }

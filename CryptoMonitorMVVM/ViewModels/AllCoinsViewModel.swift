@@ -83,7 +83,7 @@ final class AllCoinsViewModel {
                 } else {
                     isBadConnection.value = true
                 }
-                //MARK: - TODO: Перестать показывать уведомление при появлении соединения без перезагрузки приложения
+                //MARK: - TODO: показывать уведомление при отсуствии соединения без перезагрузки приложения
             }
         }
     //MARK: - Fetch Data from API

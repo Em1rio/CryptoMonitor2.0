@@ -56,12 +56,14 @@ final class AllCoinsViewController: UIViewController {
     // MARK: - Actions
 
     private func bindViewModel() {
-        viewModel.isBadConnection.bind { [weak self] isBadConnection in
-            guard let self else {return}
-            DispatchQueue.main.async {
-                self.showNoInternetConnectionAlert()
-            }
-        }
+//        viewModel.isBadConnection.bind { [weak self] isBadConnection in
+//            guard let self else {return}
+//            DispatchQueue.main.async {
+//                if let isBadConnection = isBadConnection, isBadConnection {
+//                    self.showNoInternetConnectionAlert()
+//                }
+//            }
+//        }
         
         viewModel.isLoading.bind { [weak self] isLoading in
             guard let self, let isLoading else {return}
@@ -82,7 +84,8 @@ final class AllCoinsViewController: UIViewController {
         let alert = UIAlertController(
             title: "Нет соединения", message: "Требуется подключение к интернету для загрузки данных", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+        self.present(alert, animated: true)
+
     }
 
     

@@ -68,41 +68,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 observableToUpdate = quantityLabelObservable
             } else {
                 observableToUpdate = priceLabelObservable
-                
             }
-            // Обработка нажатия кнопки сброса
-            if case .allClear = buttonCell {
-                   self.viewModel.accumulatedValue = 0.0
-                   self.viewModel.canAddDecimal = true
-                   self.viewModel.isFirstInteractionWithNumPad = true
-                   observableToUpdate.value = "0.0"
-            } else {
-                if observableToUpdate.value?.count ?? 0 < 10 {
-            // Обработка нажатия кнопки дроби
-                    if case .decimal = buttonCell {
-                        if self.viewModel.canAddDecimal && !(observableToUpdate.value?.contains(".") ?? false) {
-                                if let currentValue = observableToUpdate.value {
-                                    observableToUpdate.value = currentValue + "."
-                                }
-                            }
-
-                    }
-            // Обработка нажатия номерных кнопок
-            //MARK: - TODO: Устранить возможность ввода 0123
-                    else if case .number(let number) = buttonCell {
-                        if self.viewModel.isFirstInteractionWithNumPad && observableToUpdate.value == "0.0" {
-                            observableToUpdate.value = "\(number)"
-                            self.viewModel.isFirstInteractionWithNumPad = false
-                        } else {
-                            if observableToUpdate.value == "0" && number == 0 {
-                                observableToUpdate.value = "0.0"
-                            } else {
-                                observableToUpdate.value = (observableToUpdate.value ?? "") + "\(number)"
-                            }
-                        }
-                    }
-                }
-            }
+            self.viewModel.numPadButtonTapped(buttonCell,
+                                              forSegmentIndex: selectedSegmentIndex,
+                                              observableToUpdate: &observableToUpdate)
 
         } else if collectionView == coinCollectionView {
             // Обработка выбора элемента в coinCollectionView
@@ -131,5 +100,5 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
     }
  
-    // TO DO: Обнуление после записи в базу 
+   
 }
