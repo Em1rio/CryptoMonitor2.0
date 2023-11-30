@@ -6,11 +6,14 @@
 //
 
 import Foundation
+import RealmSwift
 
 final class AllAssetsViewModel {
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
+    private(set) var coinsAsCategory: Results<CoinCategory>?
+    var callTableView: (()-> Void)?
 
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
@@ -19,7 +22,19 @@ final class AllAssetsViewModel {
         self.dataBaseManager = dataBaseManager
     }
     //MARK: - Data source for TableView
-    let allAssetsModel = ["BTC", "ETC", "LTC", "ETC", "ETC", "ETC", "ETC", "ETC", "ETC", "ETC"]
+    func numberOfRow(_ section: Int) -> Int {
+        if let coins = coinsAsCategory, !coins.isEmpty  {
+            return coins.count
+        } else {
+            return 0
+        }
+        
+    }
+    func loadDataFromDatabase()  {
+        coinsAsCategory = dataBaseManager.getCoinsAsCategory()
+        callTableView?()
+    }
+    let allAssetsModel = ["ETH", "BTC"]
     
 //    func fetchTickerDetails(withID id: String) {
 //        networkManager.fetchTickerDetails(withID: id) { result in

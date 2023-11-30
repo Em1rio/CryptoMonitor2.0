@@ -11,11 +11,12 @@ final class AllCoinsViewModel {
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
-    var isLoading: Observable<Bool> = Observable(false)
-    var isBadConnection: Observable<Bool> = Observable(false)
-    var cellDataSource: Observable<[AllCoinsCellModel]> = Observable(nil)
-    var dataFromAPI: [Datum]?
-    var dataFromDB: [AllCoinsDBModel]?
+    private(set) var isLoading: Observable<Bool> = Observable(false)
+    private(set) var isBadConnection: Observable<Bool> = Observable(false)
+    private var dataFromAPI: [Datum]?
+    private var dataFromDB: [AllCoinsDBModel]?
+    private(set) var cellDataSource: Observable<[AllCoinsCellModel]> = Observable(nil)
+
     
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,

@@ -49,11 +49,15 @@ final class AllAssetsViewController: UIViewController {
         setupHeaderView()
         setupAllAssetsCostLabel()
         setupTableView()
+
         
-        
-        
-        
-        
+    
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.loadDataFromDatabase()
+        viewModel.callTableView = { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
     
     // MARK: - UI Setup

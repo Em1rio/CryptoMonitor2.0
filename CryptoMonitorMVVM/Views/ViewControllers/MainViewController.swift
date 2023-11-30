@@ -178,6 +178,12 @@ final class MainViewController: UIViewController {
         }
     
     }
+    func setLabelsOnDefaultState() {
+        self.LabelSelection.selectedSegmentIndex = 0
+        self.labelSelectionValueChanged()
+        self.quantityLabelObservable.value = "0.0"
+        self.priceLabelObservable.value = "0.0"
+    }
     private func bindLabels() {
         quantityLabelObservable.bind { [weak self] text in
             self?.quantityLabel.text = text

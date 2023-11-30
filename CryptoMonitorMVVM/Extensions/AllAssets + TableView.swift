@@ -9,14 +9,19 @@ import UIKit
 
 extension AllAssetsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return viewModel.numberOfRow(section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let coins = viewModel.allAssetsModel[indexPath.row]
         var content = cell.defaultContentConfiguration()
-        content.text = coins
+        if let coins = viewModel.coinsAsCategory, !coins.isEmpty  {
+            let coin = coins[indexPath.row]
+            content.text = coin.nameCoin
+        } else {
+            
+        }
+        
         cell.contentConfiguration = content
         return cell
     }

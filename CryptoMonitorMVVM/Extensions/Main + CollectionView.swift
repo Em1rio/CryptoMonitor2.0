@@ -83,18 +83,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                         return
                     }
                     self?.viewModel.saveToDataBase(AllCoinsCellModel, isPurchase: self?.isPurchase ?? true, quantity: Decimal128(value: quantity), price: Decimal128(value: price))
-                    self?.LabelSelection.selectedSegmentIndex = 0
-                    self?.labelSelectionValueChanged()
-                    self?.quantityLabelObservable.value = "0.0"
-                    self?.priceLabelObservable.value = "0.0"
+                    self?.setLabelsOnDefaultState()
                 }
             } else {
                 let buttonCell = self.viewModel.quickAccessCoinsCells[indexPath.row - 1]
                 self.viewModel.saveToDataBase(buttonCell, isPurchase: self.isPurchase, quantity: Decimal128(value: quantityLabelObservable.value ?? 0.0), price: Decimal128(value: priceLabelObservable.value ?? 0.0))
-                self.LabelSelection.selectedSegmentIndex = 0
-                self.labelSelectionValueChanged()
-                self.quantityLabelObservable.value = "0.0"
-                self.priceLabelObservable.value = "0.0"
+                self.setLabelsOnDefaultState()
                 
             }
         }

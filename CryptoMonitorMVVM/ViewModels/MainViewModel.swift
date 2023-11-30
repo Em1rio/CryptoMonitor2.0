@@ -14,12 +14,13 @@ final class MainViewModel {
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
-    var cellDataSource: Observable<[QuickAccessCoins]> = Observable([])
-    var quickAccessCoins: [QuickAccessCoins]?
-    var canAddDecimal: Bool = true
     var isFirstInteractionWithNumPad = true
-    var accumulatedValue: Double = 0
-    var quickAccessCoinsCells: [QuickAccessCoins] = []
+    private(set) var canAddDecimal: Bool = true
+    private(set) var accumulatedValue: Double = 0
+    private(set) var cellDataSource: Observable<[QuickAccessCoins]> = Observable([])
+    private(set) var quickAccessCoins: [QuickAccessCoins]?
+    private(set) var quickAccessCoinsCells: [QuickAccessCoins] = []
+
     
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,

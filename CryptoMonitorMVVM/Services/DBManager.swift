@@ -15,6 +15,7 @@ protocol DBManagerProtocol {
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128)
     func saveQuickAccessCoinsToUserDefaults(_ coins: [QuickAccessCoins])
     func loadQuickAccessCoinsFromUserDefaults() -> [QuickAccessCoins]
+    func getCoinsAsCategory() -> Results<CoinCategory>
     
     
 }
@@ -153,6 +154,10 @@ struct DBManager: DBManagerProtocol {
     
     
     //MARK: - Methods for All Assets & Detail Screen
+    func getCoinsAsCategory() -> Results<CoinCategory> {
+        let data = realm.objects(CoinCategory.self)
+        return data
+    }
     
     func getRealmQuery<T: Object, V>(forType type: T.Type, where keyPath: KeyPath<T, V>, equals value: V) -> Results<T> {
         let dbObjects = realm.objects(type)
