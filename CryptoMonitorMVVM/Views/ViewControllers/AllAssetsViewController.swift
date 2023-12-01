@@ -20,7 +20,7 @@ final class AllAssetsViewController: UIViewController {
     }()
     private lazy var allAssetsCostLabel: UILabel = {
         let label = UILabel()
-        label.text = "2000"
+        label.text = "0"
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 40, weight: .regular)
         return label
@@ -57,6 +57,13 @@ final class AllAssetsViewController: UIViewController {
         viewModel.loadDataFromDatabase()
         viewModel.callTableView = { [weak self] in
             self?.tableView.reloadData()
+        }
+        viewModel.fetchDataFromDB()
+        viewModel.callBalanceLabel = { [weak self] totalCost in
+            DispatchQueue.main.async {
+                self?.allAssetsCostLabel.text = totalCost
+                print("\(totalCost) from vc")
+            }
         }
     }
     
