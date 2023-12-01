@@ -11,11 +11,11 @@ import RealmSwift
 protocol DBManagerProtocol {
     func saveDataFromApi(_ data: AllCoinsDBModel)
     func fetchFromDatabase() -> [AllCoinsDBModel]?
-    func getRealmQuery<T: Object, V>(forType type: T.Type, where keyPath: KeyPath<T, V>, equals value: V) -> Results<T>
+    func getRealmQuery<T: Object, V: CVarArg>(forType type: T.Type, where attributeName: String, equals value: V) -> Results<T>
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128)
     func saveQuickAccessCoinsToUserDefaults(_ coins: [QuickAccessCoins])
     func loadQuickAccessCoinsFromUserDefaults() -> [QuickAccessCoins]
-    func getCoinsAsCategory() -> Results<CoinCategory>
+    func getObject<T: Object>(ofType type: T.Type) -> Results<T>
     
     
 }
@@ -34,9 +34,21 @@ struct DBManager: DBManagerProtocol {
     }
     
     //MARK: - Methods for All Coins Screen
+    /// Сохраняет данные из API в базу данных.
+    ///
+    /// - Parameter data: Данные типа `AllCoinsDBModel` для сохранения в базе данных.
+    ///
+    /// - Note: Этот метод используется для сохранения данных из API в базе данных Realm.
+    ///         Он принимает данные типа `AllCoinsDBModel` и сохраняет их в базе данных Realm.
     func saveDataFromApi(_ data: AllCoinsDBModel){
         saveData(data)
     }
+    /// Сохраняет данные в базе данных Realm.
+    ///
+    /// - Parameter data: Данные типа `AllCoinsDBModel` для сохранения в базе данных.
+    ///
+    /// - Note: Этот приватный метод используется для непосредственного сохранения данных
+    ///         в базе данных Realm с использованием транзакции записи Realm.
     private func saveData(_ data: AllCoinsDBModel) {
         do {
             try realm.write {
@@ -46,10 +58,22 @@ struct DBManager: DBManagerProtocol {
             print("Ошибка при сохранении объекта: \(error)")
         }
     }
+    
+    /// Дает доступ к извлечению данных о списке всех монет из базы данных Realm.
+    ///
+    /// - Returns: Массив объектов типа `AllCoinsDBModel` или `nil`, если база данных пуста.
+    ///
+    /// - Note: Этот  метод дает доступ к извлечению данных о списке всех монет из базы данных Realm.
+    ///         Возвращает массив объектов `AllCoinsDBModel` или `nil`, если база данных пуста.
     func fetchFromDatabase() -> [AllCoinsDBModel]? {
         fetchData()
     }
-    
+    /// Извлекает данные о всех монетах из базы данных Realm.
+    ///
+    /// - Returns: Массив объектов типа `AllCoinsDBModel` или `nil`, если база данных пуста.
+    ///
+    /// - Note: Этот приватный метод извлекает данные список всех монет из базы данных Realm.
+    ///         Возвращает массив объектов `AllCoinsDBModel` или `nil`, если база данных пуста.
     private func fetchData() -> [AllCoinsDBModel]? {
         let coins = realm.objects(AllCoinsDBModel.self)
         return coins.isEmpty ? nil : Array(coins)
@@ -68,7 +92,10 @@ struct DBManager: DBManagerProtocol {
     ///   - transaction: String значение Покупка или Продажа. Заполняется автоматически
     ///   - howManyValue: Колчество монет
     ///   - costValue: Цена по которой произвелась транзакция
-    
+    ///
+    /// - Note: Этот метод используется для добавления транзакции в базу данных Realm.
+    ///         Он обновляет информацию о количестве монет и их стоимости
+    ///         в зависимости от типа транзакции и сохраняет данные в базе данных Realm.
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128) {
         let value = EveryBuying(value: ["\(coinsName)", transaction, howManyValue, costValue])
         
@@ -125,14 +152,24 @@ struct DBManager: DBManagerProtocol {
         }
     }
     
-    
+    /// Сохраняет список быстрого доступа к монетам в пользовательских настройках.
+    ///
+    /// - Parameter coins: Список объектов типа `QuickAccessCoins` для сохранения в пользовательских настройках.
+    ///
+    /// - Note: Этот метод используется для сохранения списка быстрого доступа к монетам
+    ///         в пользовательских настройках приложения.
     func saveQuickAccessCoinsToUserDefaults(_ coins: [QuickAccessCoins]) {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(coins) {
             UserDefaults.standard.set(encoded, forKey: "QuickAccessCoins")
         }
     }
-    
+    /// Загружает список быстрого доступа к монетам из пользовательских настроек.
+    ///
+    /// - Returns: Список объектов типа `QuickAccessCoins`, загруженный из пользовательских настроек.
+    ///
+    /// - Note: Этот метод пытается загрузить список быстрого доступа к монетам из пользовательских настроек
+    ///         и возвращает его, если данные были сохранены ранее. В противном случае возвращает значения по умолчанию.
     func loadQuickAccessCoinsFromUserDefaults() -> [QuickAccessCoins] {
         if let savedCoins = UserDefaults.standard.object(forKey: "QuickAccessCoins") as? Data {
             let decoder = JSONDecoder()
@@ -143,7 +180,12 @@ struct DBManager: DBManagerProtocol {
         return getDefaultQuickAccessCoins()
     }
     
-    // Функция для возврата дефолтных значений
+    /// Возвращает массив объектов типа `QuickAccessCoins` со значениями по умолчанию.
+    ///
+    /// - Returns: Массив объектов типа `QuickAccessCoins` со значениями по умолчанию.
+    ///
+    /// - Note: Этот метод возвращает массив объектов типа `QuickAccessCoins`,
+    ///         содержащих значения по умолчанию для быстрого доступа к монетам.
     private func getDefaultQuickAccessCoins() -> [QuickAccessCoins] {
         return [
             QuickAccessCoins(nameCoin: "Bitcoin", tiker: "BTC", id: "90"),
@@ -154,22 +196,33 @@ struct DBManager: DBManagerProtocol {
     
     
     //MARK: - Methods for All Assets & Detail Screen
-    func getCoinsAsCategory() -> Results<CoinCategory> {
-        let data = realm.objects(CoinCategory.self)
+    /// Получает объекты определенного типа из базы данных Realm.
+    ///
+    /// - Parameter type: Тип объекта, который необходимо получить из базы данных Realm.
+    /// - Returns: Результат запроса Realm, содержащий объекты заданного типа.
+    ///
+    /// - Note: Этот метод извлекает объекты определенного типа из базы данных Realm
+    ///         и возвращает их в виде результата запроса Realm.
+    func getObject<T: Object>(ofType type: T.Type) -> Results<T> {
+        let data = realm.objects(type)
         return data
     }
     
-    func getRealmQuery<T: Object, V>(forType type: T.Type, where keyPath: KeyPath<T, V>, equals value: V) -> Results<T> {
+    /// Получает запрос Realm для определенного типа объекта по заданному атрибуту и значению.
+    /// - Parameters:
+    ///   - type: Тип объекта, для которого необходимо получить запрос Realm.
+    ///   - attributeName: Название атрибута, по которому будет выполнен запрос.
+    ///   - value: Значение, с которым сравнивается атрибут.
+    ///
+    /// - Returns: Результат запроса Realm, содержащий объекты заданного типа, удовлетворяющие условию.
+    ///
+    /// - Note: Этот метод позволяет получить запрос Realm для конкретного типа объекта,
+    ///         ограниченного заданным атрибутом и его значением.
+    func getRealmQuery<T: Object, V: CVarArg>(forType type: T.Type, where attributeName: String, equals value: V) -> Results<T> {
         let dbObjects = realm.objects(type)
-        let realmQuery = dbObjects.filter("\(keyPath) == %@", value)
+        let realmQuery = dbObjects.filter("\(attributeName) == %@", value)
         return realmQuery
     }
-    /* EXAMPLE
-     let label = "BTC"
-     let coinQuery = DatabaseManager.shared.getRealmQuery(forType: EveryBuying.self, where: \.coin, equals: label)
-     let value = "Bitcoin"
-     let coinCategoryQuery = DatabaseManager.shared.getRealmQuery(forType: CoinCategory.self, where: \.nameCoin, equals: value)
-     */
     
     
     
