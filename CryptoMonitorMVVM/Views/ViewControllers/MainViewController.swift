@@ -120,13 +120,9 @@ final class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
         setupUI()
         bindLabels()
         bindQuickAccessButtons()
-        
-   
     }
 
     
@@ -204,6 +200,7 @@ final class MainViewController: UIViewController {
 
     // MARK: - UI Setup
     private func setupUI() {
+        view.backgroundColor = .systemBackground
         setupSellOrBuyMode()
         setupDisplayView()
         setupLabels()

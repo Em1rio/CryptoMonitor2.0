@@ -25,7 +25,10 @@ extension AllAssetsViewController: UITableViewDataSource, UITableViewDelegate {
         cell.contentConfiguration = content
         return cell
     }
-
-    
+    //TODO: Обработка нажатия на ячейку
+    // через замыкание передать данные из детейлVC
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        coordinator?.coordinateToDetail()
+    }
     
 }

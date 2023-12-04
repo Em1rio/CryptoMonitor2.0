@@ -35,9 +35,7 @@ final class AllCoinsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        setupTableView()
-        setupIndicator()
+        setupUI()
         bindViewModel()
         viewModel.loadData()
         
@@ -90,6 +88,11 @@ final class AllCoinsViewController: UIViewController {
 
     
     // MARK: - Setup UI
+    private func setupUI() {
+        view.backgroundColor = .white
+        setupTableView()
+        setupIndicator()
+    }
     private func setupTableView() {
         self.tableView.delegate = self
         self.tableView.dataSource = self

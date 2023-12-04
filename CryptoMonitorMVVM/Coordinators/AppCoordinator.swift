@@ -16,14 +16,14 @@ protocol Coordinator: AnyObject {
 }
 
 final class AppCoordinator: Coordinator {
-
+    // MARK: - Variables
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     var window: UIWindow?
     private var tabBarController: TabBarController?
     private var networkManager: NetworkManagerProtocol
     private var dataBaseManager: DBManagerProtocol
-    
+    // MARK: - Lifecycle
     init(window: UIWindow, navigationController: UINavigationController, networkManager: NetworkManagerProtocol, dataBaseManager: DBManagerProtocol) {
         self.window = window
         self.navigationController = navigationController
@@ -31,6 +31,7 @@ final class AppCoordinator: Coordinator {
         self.dataBaseManager = dataBaseManager
         window.makeKeyAndVisible()
     }
+    // MARK: - Setup
     func start() {
         let tabBarCoordinator = TabBarCoordinator(
             navigationController, networkManager, dataBaseManager)
@@ -39,6 +40,7 @@ final class AppCoordinator: Coordinator {
         }
 
 }
+    // MARK: - Actions
 extension Coordinator {
     func removeChildCoordinator(_ coordinator: Coordinator) {
         childCoordinators = childCoordinators.filter { $0 !== coordinator}

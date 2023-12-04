@@ -45,13 +45,7 @@ final class AllAssetsViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        setupHeaderView()
-        setupAllAssetsCostLabel()
-        setupTableView()
-
-        
-    
+        setupUI()
     }
     override func viewWillAppear(_ animated: Bool) {
         viewModel.loadDataFromDatabase()
@@ -68,6 +62,12 @@ final class AllAssetsViewController: UIViewController {
     }
     
     // MARK: - UI Setup
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
+        setupHeaderView()
+        setupAllAssetsCostLabel()
+        setupTableView()
+    }
     
     private func setupHeaderView() {
         self.view.addSubview(headerView)

@@ -9,12 +9,13 @@ import Foundation
 import UIKit
 
 final class AllAssetsCoordinator: Coordinator {
+    // MARK: - Variables
     var parentCoordinator: TabBarCoordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     private var networkManager: NetworkManagerProtocol
     private var dataBaseManager: DBManagerProtocol
-        
+    // MARK: - Lifecycle
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
@@ -22,11 +23,33 @@ final class AllAssetsCoordinator: Coordinator {
             self.networkManager = networkManager
             self.dataBaseManager = dataBaseManager
         }
+    // MARK: - Setup
     func start() {
         let allAssetsViewModel = AllAssetsViewModel(networkManager, dataBaseManager)
         let allAssetsViewController = AllAssetsViewController(allAssetsViewModel, coordinator: self)
-        navigationController = UINavigationController(rootViewController: allAssetsViewController)
+        navigationController.setViewControllers([allAssetsViewController], animated: true)
+        navigationController.setNavigationBarHidden(true, animated: false)
         parentCoordinator?.childCoordinators.append(self)
     }
 
+}
+
+extension AllAssetsCoordinator {
+    func coordinateToDetail() {
+
+        let detailCoordinator = DetailCoordinator(
+            navigationController, networkManager, dataBaseManager)
+        detailCoordinator.parentCoordinator = self
+        childCoordinators.append(detailCoordinator)
+        detailCoordinator.start()
+    }
+    func childDidFinish(_ child: Coordinator?) {
+        for (index, coordinator) in
+                childCoordinators.enumerated() {
+            if coordinator === child {
+                childCoordinators.remove(at: index)
+                break
+            }
+        }
+    }
 }

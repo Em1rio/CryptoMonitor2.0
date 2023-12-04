@@ -33,6 +33,8 @@
 		FD49C7312AE0184C00AB301F /* AllCoinsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD49C7302AE0184C00AB301F /* AllCoinsViewModel.swift */; };
 		FD72DDE12AEA89A100EF291B /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD72DDE02AEA89A100EF291B /* TabBarController.swift */; };
 		FD72DDE42AEAA8C700EF291B /* CoinButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD72DDE32AEAA8C700EF291B /* CoinButtonCell.swift */; };
+		FD877BA32B1A0B6500B859DD /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD877BA22B1A0B6500B859DD /* Formatter.swift */; };
+		FD877BA52B1A0D6D00B859DD /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD877BA42B1A0D6D00B859DD /* Results.swift */; };
 		FD9300252AF52D6200AFDBC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9300242AF52D6200AFDBC6 /* SceneDelegate.swift */; };
 		FDBF899D2AEBEAD9000868A7 /* AllAssets + TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBF899C2AEBEAD9000868A7 /* AllAssets + TableView.swift */; };
 		FDBF899F2AEC080F000868A7 /* QuickAccessCoins.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDBF899E2AEC080F000868A7 /* QuickAccessCoins.swift */; };
@@ -41,6 +43,8 @@
 		FDD7DBAB2AF2871F000D3E3F /* AllAssetsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD7DBAA2AF2871F000D3E3F /* AllAssetsCoordinator.swift */; };
 		FDD830B72AEFCFD000FA5520 /* OneCoinModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD830B62AEFCFD000FA5520 /* OneCoinModel.swift */; };
 		FDD830B92AEFD23700FA5520 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD830B82AEFD23700FA5520 /* NetworkManager.swift */; };
+		FDFABC872B1DEC92008DF1C7 /* DetailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFABC862B1DEC92008DF1C7 /* DetailCoordinator.swift */; };
+		FDFABC892B1E06C8008DF1C7 /* Detail + TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFABC882B1E06C8008DF1C7 /* Detail + TableView.swift */; };
 		FDFF20252AFBBCD10008401D /* AllCoinsCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDFF20242AFBBCD10008401D /* AllCoinsCellModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -75,6 +79,8 @@
 		FD49C7302AE0184C00AB301F /* AllCoinsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCoinsViewModel.swift; sourceTree = "<group>"; };
 		FD72DDE02AEA89A100EF291B /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		FD72DDE32AEAA8C700EF291B /* CoinButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinButtonCell.swift; sourceTree = "<group>"; };
+		FD877BA22B1A0B6500B859DD /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
+		FD877BA42B1A0D6D00B859DD /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		FD9300242AF52D6200AFDBC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		FDBF899C2AEBEAD9000868A7 /* AllAssets + TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AllAssets + TableView.swift"; sourceTree = "<group>"; };
 		FDBF899E2AEC080F000868A7 /* QuickAccessCoins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAccessCoins.swift; sourceTree = "<group>"; };
@@ -83,6 +89,8 @@
 		FDD7DBAA2AF2871F000D3E3F /* AllAssetsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllAssetsCoordinator.swift; sourceTree = "<group>"; };
 		FDD830B62AEFCFD000FA5520 /* OneCoinModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneCoinModel.swift; sourceTree = "<group>"; };
 		FDD830B82AEFD23700FA5520 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		FDFABC862B1DEC92008DF1C7 /* DetailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCoordinator.swift; sourceTree = "<group>"; };
+		FDFABC882B1E06C8008DF1C7 /* Detail + TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Detail + TableView.swift"; sourceTree = "<group>"; };
 		FDFF20242AFBBCD10008401D /* AllCoinsCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCoinsCellModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -250,6 +258,8 @@
 			children = (
 				FD1086CD2AE2BE1E0034FC1D /* Main + CollectionView.swift */,
 				FDBF899C2AEBEAD9000868A7 /* AllAssets + TableView.swift */,
+				FD877BA42B1A0D6D00B859DD /* Results.swift */,
+				FDFABC882B1E06C8008DF1C7 /* Detail + TableView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -261,6 +271,7 @@
 				FDD7DBA82AF2870A000D3E3F /* MainCoordinator.swift */,
 				FD46D8502AF3C4DE0079CC4D /* AllCoinsCoordinator.swift */,
 				FDD7DBAA2AF2871F000D3E3F /* AllAssetsCoordinator.swift */,
+				FDFABC862B1DEC92008DF1C7 /* DetailCoordinator.swift */,
 				FD46D8522AF3E1E00079CC4D /* TabBarCoordinator.swift */,
 			);
 			path = Coordinators;
@@ -273,6 +284,7 @@
 				FDD830B82AEFD23700FA5520 /* NetworkManager.swift */,
 				FD15B9A32AFE6AAD004C195E /* NetworkMonitor.swift */,
 				FD15B9AA2AFE74DA004C195E /* DBManager.swift */,
+				FD877BA22B1A0B6500B859DD /* Formatter.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -401,6 +413,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FD877BA32B1A0B6500B859DD /* Formatter.swift in Sources */,
 				FDBF899D2AEBEAD9000868A7 /* AllAssets + TableView.swift in Sources */,
 				FD1086CA2AE2BABC0034FC1D /* NumberPadCell.swift in Sources */,
 				FD1086C02AE2ABE20034FC1D /* Observable.swift in Sources */,
@@ -422,11 +435,14 @@
 				FD72DDE42AEAA8C700EF291B /* CoinButtonCell.swift in Sources */,
 				FD49C7272AE017C800AB301F /* DetailViewController.swift in Sources */,
 				FD49C7292AE017DC00AB301F /* AllAssetsViewController.swift in Sources */,
+				FD877BA52B1A0D6D00B859DD /* Results.swift in Sources */,
 				FDD7DBAB2AF2871F000D3E3F /* AllAssetsCoordinator.swift in Sources */,
 				FD72DDE12AEA89A100EF291B /* TabBarController.swift in Sources */,
 				FD1086C72AE2B81B0034FC1D /* NumberPadButton.swift in Sources */,
 				FD49C72B2AE0181700AB301F /* AllCoinsViewController.swift in Sources */,
 				FD49C7312AE0184C00AB301F /* AllCoinsViewModel.swift in Sources */,
+				FDFABC892B1E06C8008DF1C7 /* Detail + TableView.swift in Sources */,
+				FDFABC872B1DEC92008DF1C7 /* DetailCoordinator.swift in Sources */,
 				FD1086CE2AE2BE1E0034FC1D /* Main + CollectionView.swift in Sources */,
 				FD1086C42AE2AD3B0034FC1D /* AllCoinsModel.swift in Sources */,
 				FD46D8512AF3C4DE0079CC4D /* AllCoinsCoordinator.swift in Sources */,

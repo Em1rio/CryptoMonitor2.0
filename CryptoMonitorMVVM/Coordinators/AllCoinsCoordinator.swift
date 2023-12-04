@@ -8,13 +8,14 @@
 import UIKit
 
 final class AllCoinsCoordinator: Coordinator {
+    // MARK: - Variables
     weak var parentCoordinator: MainCoordinator?
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     var dataFromSelected: ((AllCoinsCellModel) -> Void)?
     private var networkManager: NetworkManagerProtocol
     private var dataBaseManager: DBManagerProtocol
-        
+    // MARK: - Lifecycle
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
@@ -22,10 +23,8 @@ final class AllCoinsCoordinator: Coordinator {
             self.networkManager = networkManager
             self.dataBaseManager = dataBaseManager
         }
-
+    // MARK: - Setup
     func start() {
-        let networkManager = NetworkManager()
-        let dataBaseManager = DBManager()
         let allCoinsViewModel = AllCoinsViewModel(networkManager, dataBaseManager)
         let allCoinsViewController = AllCoinsViewController(allCoinsViewModel, coordinator: self)
         allCoinsViewController.title = "All Coins"
@@ -33,14 +32,10 @@ final class AllCoinsCoordinator: Coordinator {
             self?.dataFromSelected?(AllCoinsCellModel)
             
         }
-        
-        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-            if let sceneDelegate = scene.delegate as? SceneDelegate, let window = sceneDelegate.window {
-                window.rootViewController?.present(allCoinsViewController, animated: true, completion: nil)
-            }
-        }
-    }
+        navigationController.present(allCoinsViewController, animated: true)
 
+    }
+    // MARK: - Actions
     func didFinish() {
         parentCoordinator?.childDidFinish(self)
     }

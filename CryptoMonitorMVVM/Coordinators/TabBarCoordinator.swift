@@ -9,12 +9,13 @@ import Foundation
 import UIKit
 
 final class TabBarCoordinator: Coordinator {
+    // MARK: - Variables
     var parentCoordinator: AppCoordinator?
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     private var networkManager: NetworkManagerProtocol
     private var dataBaseManager: DBManagerProtocol
-        
+    // MARK: - Lifecycle
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
@@ -22,9 +23,8 @@ final class TabBarCoordinator: Coordinator {
             self.networkManager = networkManager
             self.dataBaseManager = dataBaseManager
         }
+    // MARK: - Setup
     func start() {
-
-        
         let mainCoordinator = MainCoordinator(
             navigationController, networkManager, dataBaseManager)
         let allAssetsCoordinator = AllAssetsCoordinator(
@@ -46,8 +46,9 @@ final class TabBarCoordinator: Coordinator {
         allAssetsVC.tabBarItem = allAssetsTab
         allAssetsCoordinator.start()
 
-        tabBarController.viewControllers = [mainVC, allAssetsVC]
+        
         navigationController.setViewControllers([tabBarController], animated: true)
+        tabBarController.viewControllers = [mainVC, allAssetsVC]
         
             
     }
