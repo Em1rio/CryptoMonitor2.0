@@ -215,10 +215,11 @@ final class MainViewController: UIViewController {
         self.view.addSubview(SellOrBuyMode)
         self.SellOrBuyMode.addTarget(self, action: #selector(sellOrBuyModeValueChanged), for: .valueChanged)
         self.SellOrBuyMode.translatesAutoresizingMaskIntoConstraints = false
+//        let spacingFromTop = view.bounds.height * 0.015
         
         NSLayoutConstraint.activate([
             self.SellOrBuyMode.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+                equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             self.SellOrBuyMode.leadingAnchor.constraint(
                 lessThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 285),
             self.SellOrBuyMode.trailingAnchor.constraint(
@@ -231,7 +232,7 @@ final class MainViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             self.displayView.topAnchor.constraint(
-                lessThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: 70),
+                lessThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
             self.displayView.leadingAnchor.constraint(
                 equalTo: view.leadingAnchor, constant: 26),
             self.displayView.trailingAnchor.constraint(
@@ -275,7 +276,8 @@ final class MainViewController: UIViewController {
             self.LabelSelection.heightAnchor.constraint(
                 equalTo: view.heightAnchor, multiplier: 0.0464768),
             self.LabelSelection.centerXAnchor.constraint(
-                equalTo: displayView.centerXAnchor)
+                equalTo: displayView.centerXAnchor),
+            
         ])
     }
     private func setupNumPadContainerView() {
