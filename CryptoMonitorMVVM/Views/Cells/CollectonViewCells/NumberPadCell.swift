@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NumberPadCell: UICollectionViewCell {
+final class NumberPadCell: UICollectionViewCell {
     static let identifire = "NumberPadCell"
     
     // MARK: - Variables

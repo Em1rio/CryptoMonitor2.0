@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CoinButtonCell: UICollectionViewCell {
+final class CoinButtonCell: UICollectionViewCell {
     static let identifire = "CoinButtonCell"
     // MARK: - Variables
     private(set) var quickAccessButtons: QuickAccessCoins!
