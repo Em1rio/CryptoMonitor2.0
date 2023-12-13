@@ -56,7 +56,6 @@ final class AllAssetsViewController: UIViewController {
         viewModel.callBalanceLabel = { [weak self] totalCost in
             DispatchQueue.main.async {
                 self?.allAssetsCostLabel.text = totalCost
-                print("\(totalCost) from vc")
             }
         }
     }
