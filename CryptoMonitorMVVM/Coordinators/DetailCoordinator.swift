@@ -15,6 +15,7 @@ final class DetailCoordinator: Coordinator {
     var navigationController: UINavigationController
     private var networkManager: NetworkManagerProtocol
     private var dataBaseManager: DBManagerProtocol
+    var title = ""
     // MARK: - Lifecycle
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
@@ -28,7 +29,7 @@ final class DetailCoordinator: Coordinator {
     func start() {
         let datailViewModel = DetailViewModel(networkManager, dataBaseManager)
         let detailViewController = DetailViewController(datailViewModel, coordinator: self)
-        detailViewController.title = "Detail" // Подставить тайтл в соответсвии с названием
+        detailViewController.title = "\(title)" 
         navigationController.pushViewController(detailViewController, animated: true)
         navigationController.setNavigationBarHidden(false, animated: false)
         
