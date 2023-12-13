@@ -35,12 +35,13 @@ final class AllAssetsCoordinator: Coordinator {
 }
 
 extension AllAssetsCoordinator {
-    func coordinateToDetail() {
+    func coordinateToDetail(_with tiker: String) {
 
         let detailCoordinator = DetailCoordinator(
             navigationController, networkManager, dataBaseManager)
         detailCoordinator.parentCoordinator = self
         childCoordinators.append(detailCoordinator)
+        detailCoordinator.title = tiker
         detailCoordinator.start()
     }
     func childDidFinish(_ child: Coordinator?) {
