@@ -13,7 +13,7 @@ final class Formatter {
 
     private init() { }
 
-    func format(inputValue: String) -> String {
+    func format(_ inputValue: String) -> String {
 
         let value = Decimal(string: inputValue )
         let numberFormatter = NumberFormatter()
