@@ -19,22 +19,22 @@ final class DetailViewController: UIViewController {
 
     // MARK: - UI Components
     private lazy var displayView: UIView = {
-        return createCustomView(withBackgroundColor: .systemBackground, cornerRadius: 16)
+        return createCustomView(withBackgroundColor: .systemBackground)
     }()
     private lazy var detailsView: UIView = {
         return createCustomView(withBackgroundColor: .systemBackground)
     }()
     private lazy var averagePriceView: UIView = {
-        return createCustomView(withBackgroundColor: .secondarySystemBackground)
+        return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
     private lazy var changeOverTimeView: UIView = {
-        return createCustomView(withBackgroundColor: .secondarySystemBackground)
+        return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
     private lazy var changePerDayView: UIView = {
-        return createCustomView(withBackgroundColor: .secondarySystemBackground)
+        return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
     private lazy var marketPriceView: UIView = {
-        return createCustomView(withBackgroundColor: .secondarySystemBackground)
+        return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
 
     private lazy var numberOfCoinsLabel: UILabel = {
