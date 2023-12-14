@@ -41,6 +41,7 @@ extension AllAssetsViewController: UITableViewDataSource, UITableViewDelegate {
         if let coins = viewModel.coinsAsCategory, !coins.isEmpty {
             let pressedCoin = coins[indexPath.row]
             coordinator?.coordinateToDetail(_with: pressedCoin.nameCoin)
+            
         }
         
     }
