@@ -9,7 +9,7 @@ import UIKit
 
 final class DetailViewController: UIViewController {
     // MARK: - Variables
-    private let viewModel: DetailViewModel
+    private(set) var viewModel: DetailViewModel
     weak var coordinator: DetailCoordinator?
     
     // MARK: - UI Components
@@ -60,7 +60,7 @@ final class DetailViewController: UIViewController {
     
     private(set) lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(TransactionCell.self, forCellReuseIdentifier: TransactionCell.identifire)
         return tableView
     }()
     // MARK: - Lifecycle
@@ -76,8 +76,18 @@ final class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.getDetailData()
+        viewModel.callTableView = { [weak self] in
+            self?.tableView.reloadData()
+        }
+        viewModel.callBalanceLabel = { [weak self] totalCost in
+            DispatchQueue.main.async {
+                self?.coinsValueLabel.text = totalCost
+            }
+        }
     }
     override func viewWillDisappear(_ animated: Bool) {
         coordinator?.navigationController.setNavigationBarHidden(true, animated: false)
