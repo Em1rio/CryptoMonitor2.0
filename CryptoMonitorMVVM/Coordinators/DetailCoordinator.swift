@@ -29,7 +29,8 @@ final class DetailCoordinator: Coordinator {
     func start() {
         let datailViewModel = DetailViewModel(networkManager, dataBaseManager)
         let detailViewController = DetailViewController(datailViewModel, coordinator: self)
-        detailViewController.title = "\(title)" 
+        detailViewController.title = "\(title)"
+        datailViewModel.nameCoin = "\(title)"
         navigationController.pushViewController(detailViewController, animated: true)
         navigationController.setNavigationBarHidden(false, animated: false)
         

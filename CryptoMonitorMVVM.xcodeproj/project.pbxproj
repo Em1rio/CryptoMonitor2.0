@@ -17,6 +17,7 @@
 		FD15B9A72AFE6EC4004C195E /* CoinAsCategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD15B9A62AFE6EC4004C195E /* CoinAsCategoryModel.swift */; };
 		FD15B9A92AFE6F14004C195E /* AllCoinsDBModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD15B9A82AFE6F14004C195E /* AllCoinsDBModel.swift */; };
 		FD15B9AB2AFE74DA004C195E /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD15B9AA2AFE74DA004C195E /* DBManager.swift */; };
+		FD1606F02B29E2A900C8E7FA /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1606EF2B29E2A900C8E7FA /* TransactionCell.swift */; };
 		FD46D84F2AF3B2C60079CC4D /* ShowAllButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD46D84E2AF3B2C60079CC4D /* ShowAllButtonCell.swift */; };
 		FD46D8512AF3C4DE0079CC4D /* AllCoinsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD46D8502AF3C4DE0079CC4D /* AllCoinsCoordinator.swift */; };
 		FD46D8532AF3E1E00079CC4D /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD46D8522AF3E1E00079CC4D /* TabBarCoordinator.swift */; };
@@ -61,6 +62,7 @@
 		FD15B9A62AFE6EC4004C195E /* CoinAsCategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinAsCategoryModel.swift; sourceTree = "<group>"; };
 		FD15B9A82AFE6F14004C195E /* AllCoinsDBModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCoinsDBModel.swift; sourceTree = "<group>"; };
 		FD15B9AA2AFE74DA004C195E /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
+		FD1606EF2B29E2A900C8E7FA /* TransactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCell.swift; sourceTree = "<group>"; };
 		FD46D84E2AF3B2C60079CC4D /* ShowAllButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowAllButtonCell.swift; sourceTree = "<group>"; };
 		FD46D8502AF3C4DE0079CC4D /* AllCoinsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCoinsCoordinator.swift; sourceTree = "<group>"; };
 		FD46D8522AF3E1E00079CC4D /* TabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
@@ -172,6 +174,16 @@
 			path = OtherModels;
 			sourceTree = "<group>";
 		};
+		FD1606EE2B29E1C100C8E7FA /* CollectonViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				FD1086C92AE2BABC0034FC1D /* NumberPadCell.swift */,
+				FD72DDE32AEAA8C700EF291B /* CoinButtonCell.swift */,
+				FD46D84E2AF3B2C60079CC4D /* ShowAllButtonCell.swift */,
+			);
+			path = CollectonViewCells;
+			sourceTree = "<group>";
+		};
 		FD49C6FF2AE013B200AB301F = {
 			isa = PBXGroup;
 			children = (
@@ -258,8 +270,8 @@
 			children = (
 				FD1086CD2AE2BE1E0034FC1D /* Main + CollectionView.swift */,
 				FDBF899C2AEBEAD9000868A7 /* AllAssets + TableView.swift */,
-				FD877BA42B1A0D6D00B859DD /* Results.swift */,
 				FDFABC882B1E06C8008DF1C7 /* Detail + TableView.swift */,
+				FD877BA42B1A0D6D00B859DD /* Results.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -292,9 +304,8 @@
 		FD72DDE22AEAA87F00EF291B /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				FD1086C92AE2BABC0034FC1D /* NumberPadCell.swift */,
-				FD72DDE32AEAA8C700EF291B /* CoinButtonCell.swift */,
-				FD46D84E2AF3B2C60079CC4D /* ShowAllButtonCell.swift */,
+				FD1606EE2B29E1C100C8E7FA /* CollectonViewCells */,
+				FD1606EF2B29E2A900C8E7FA /* TransactionCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -432,6 +443,7 @@
 				FDBF899F2AEC080F000868A7 /* QuickAccessCoins.swift in Sources */,
 				FD15B9A42AFE6AAD004C195E /* NetworkMonitor.swift in Sources */,
 				FD15B9A92AFE6F14004C195E /* AllCoinsDBModel.swift in Sources */,
+				FD1606F02B29E2A900C8E7FA /* TransactionCell.swift in Sources */,
 				FD72DDE42AEAA8C700EF291B /* CoinButtonCell.swift in Sources */,
 				FD49C7272AE017C800AB301F /* DetailViewController.swift in Sources */,
 				FD49C7292AE017DC00AB301F /* AllAssetsViewController.swift in Sources */,
