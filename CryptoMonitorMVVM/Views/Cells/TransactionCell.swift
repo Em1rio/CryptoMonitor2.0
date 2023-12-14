@@ -21,13 +21,13 @@ final class TransactionCell: UITableViewCell {
         return createLabel(fontSize: 15)
     }()
     private lazy var descriptionPriceLabel: UILabel = {
-       return createLabel(fontSize: 15)
+       return createLabel(fontSize: 15, text: "Цена")
     }()
     lazy var priceLabel: UILabel = {
         return createLabel(fontSize: 15)
     }()
     private lazy var descriptionTotalCostLabel: UILabel = {
-       return createLabel(fontSize: 15)
+       return createLabel(fontSize: 15, text: "Стоило")
     }()
     lazy var totalCostLabel: UILabel = {
         return createLabel(fontSize: 15)
@@ -59,28 +59,34 @@ final class TransactionCell: UITableViewCell {
 //        self.addSubview(descriptionTotalCostLabel)
 //        self.addSubview(totalCostLabel)
         addSubview(firstStackView)
-        addSubview(secondStackView)
-        addSubview(thirdStackView)
-        [firstStackView, secondStackView, thirdStackView].forEach { stackView in
-                    stackView.translatesAutoresizingMaskIntoConstraints = false
-                    NSLayoutConstraint.activate([
-                        stackView.topAnchor.constraint(equalTo: topAnchor),
-                        stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
-                    ])
-                }
+//        addSubview(secondStackView)
+//        addSubview(thirdStackView)
+
         NSLayoutConstraint.activate([
+                    firstStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1.0/3.0),
+//                    secondStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1.0/3.0),
+//                    thirdStackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1.0/3.0),
+                    
                     firstStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-                    firstStackView.trailingAnchor.constraint(equalTo: secondStackView.leadingAnchor),
-                    secondStackView.trailingAnchor.constraint(equalTo: thirdStackView.leadingAnchor),
-                    thirdStackView.trailingAnchor.constraint(equalTo: trailingAnchor)
+                    firstStackView.topAnchor.constraint(equalTo: topAnchor),
+                    firstStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+                    //firstStackView.trailingAnchor.constraint(equalTo: secondStackView.leadingAnchor),
+
+//                    secondStackView.topAnchor.constraint(equalTo: topAnchor),
+//                    secondStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+//                    secondStackView.trailingAnchor.constraint(equalTo: thirdStackView.leadingAnchor),
+//
+//                    thirdStackView.topAnchor.constraint(equalTo: topAnchor),
+//                    thirdStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+//                    thirdStackView.bottomAnchor.constraint(equalTo: bottomAnchor)
                 ])
         let labels1: [UILabel] = [transactionLabel, quantityLabel]
-                let labels2: [UILabel] = [descriptionPriceLabel, priceLabel]
-                let labels3: [UILabel] = [descriptionTotalCostLabel, totalCostLabel]
+//        let labels2: [UILabel] = [descriptionPriceLabel, priceLabel]
+//        let labels3: [UILabel] = [descriptionTotalCostLabel, totalCostLabel]
 
-                addLabels(labels1, to: firstStackView)
-        addLabels(labels2, to: secondStackView)
-                addLabels(labels3, to: thirdStackView)
+        addLabels(labels1, to: firstStackView)
+//        addLabels(labels2, to: secondStackView)
+//        addLabels(labels3, to: thirdStackView)
         
 //        transactionLabel.translatesAutoresizingMaskIntoConstraints = false
 //        quantityLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -105,8 +111,9 @@ final class TransactionCell: UITableViewCell {
                 stackView.addArrangedSubview(label)
             }
         }
-    private func createLabel(fontSize: CGFloat, textColor: UIColor? = UIColor.label) -> UILabel {
+    private func createLabel(fontSize: CGFloat, textColor: UIColor? = UIColor.label, text: String? = "") -> UILabel {
         let label = UILabel()
+        label.text = text
         label.font = UIFont.systemFont(ofSize: fontSize)
         label.textAlignment = .center
         label.textColor = textColor
@@ -118,6 +125,7 @@ final class TransactionCell: UITableViewCell {
         stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 4
+        stackView.backgroundColor = .secondarySystemBackground
         return stackView
     }
 }
