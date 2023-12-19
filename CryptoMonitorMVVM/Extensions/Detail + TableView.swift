@@ -17,7 +17,7 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
             
             let sectionDate = viewModel.sections[section].date
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd.MM.yyyy" // Формат даты, который вы хотите отобразить
+            dateFormatter.dateFormat = "dd.MM.yyyy"
             
             return dateFormatter.string(from: sectionDate)
     }
@@ -29,7 +29,14 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TransactionCell.identifire, for: indexPath) as? TransactionCell else {
             fatalError("Error")
         }
-        let buyings = viewModel.buyings[indexPath.row]
+        let section = indexPath.section
+        let row = indexPath.row
+            
+        guard section < viewModel.sections.count else { return UITableViewCell() }
+        let sectionTransactions = viewModel.sections[section].transactions
+            
+        guard row < sectionTransactions.count else { return UITableViewCell() }
+        let buyings = sectionTransactions[row]
         cell.configure(with: buyings)
         cell.transactionLabel.text = buyings.transaction
         
@@ -38,12 +45,11 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
             cell.quantityLabel.text = "\(formattedQuantity)"
         }
         if let price = buyings.price {
-            let formattedPrice = Formatter.shared.formatCurrency(inputValue: "\(price)")
+            let formattedPrice = Formatter.shared.formatCurrency("\(price)", useCustomFormatting: true)
             cell.priceLabel.text = "\(formattedPrice)"
         }
-        
-        
-        
+        let totalCost = viewModel.calculateTotalCost()
+        cell.totalCostLabel.text = Formatter.shared.formatCurrency(totalCost[indexPath.row], useCustomFormatting: true)
         return cell
     }
     
