@@ -6,3 +6,7 @@
 //
 
 import Foundation
+struct TransactionSection {
+    var date: Date
+    var transactions: [EveryBuying]
+}
