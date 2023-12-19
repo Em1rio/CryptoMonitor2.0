@@ -7,10 +7,7 @@
 
 import Foundation
 import RealmSwift
-struct TransactionSection {
-    var date: Date
-    var transactions: [EveryBuying]
-}
+
 final class DetailViewModel {
     //TODO:
     //ЗАпрос маркет прайса
@@ -50,18 +47,30 @@ final class DetailViewModel {
             where: "coin",
             equals: nameCoin)
         buyings = Array(filteredBuyings)
+        groupTransactionsByDate()
     }
     
     func numberOfSections() -> Int {
-        return buyings.count
+        return sections.count
     }
-    
-    func numberOfRow(_ section: Int) -> Int {
+    func calculateTotalCost() -> [String] {
+        return buyings.compactMap { buying in
+            guard let price = buying.price, let quantity = buying.quantity else {
+                return nil
+            }
+            let totalCost = price * quantity
+            return "\(totalCost)"
+        }
+    }
+    private func groupTransactionsByDate() {
         let groupedTransactions = Dictionary(grouping: buyings, by: { Calendar.current.startOfDay(for: $0.date) })
         sections = groupedTransactions.map { TransactionSection(date: $0.key, transactions: $0.value) }
         sections.sort { $0.date < $1.date }
-        return sections.count
-
+    }
+    
+    func numberOfRow(_ section: Int) -> Int {
+        guard section < sections.count else { return 0 }
+            return sections[section].transactions.count
     }
 
     private func getAveragePrice() {
@@ -77,7 +86,7 @@ final class DetailViewModel {
                 return
             }
             let avrgPrice = price / quantity
-        print("Средняя цена: \(Formatter.shared.formatCurrency(inputValue: "\(avrgPrice)"))")
+        print("Средняя цена: \(Formatter.shared.formatCurrency("\(avrgPrice)", useCustomFormatting: false))")
         
     }
     private func fetchMarketSituation() {
@@ -117,7 +126,7 @@ final class DetailViewModel {
                  if let quantity = realmQuery.first?.coinQuantity {
                     let rawTotalCost = self.calculateTotalCost(priceRightNow, quantity)
                     self.totalCost += rawTotalCost
-                    let formattedTotalCost = Formatter.shared.formatCurrency(inputValue: "\(self.totalCost)")
+                    let formattedTotalCost = Formatter.shared.formatCurrency("\(self.totalCost)", useCustomFormatting: false)
                     self.updateUI(with: formattedTotalCost)
                 } else {
                     return
