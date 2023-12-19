@@ -72,7 +72,7 @@ final class AllAssetsViewModel {
                 if let quantity = realmQuery.first?.coinQuantity {
                    let rawTotalCost = self.calculateTotalCost(priceRightNow, quantity)
                    self.totalCost += rawTotalCost
-                   let formattedTotalCost = Formatter.shared.formatCurrency(inputValue: "\(self.totalCost)")
+                   let formattedTotalCost = Formatter.shared.formatCurrency("\(self.totalCost)", useCustomFormatting: false)
                    self.updateUI(with: formattedTotalCost)
                } else {
                    return
