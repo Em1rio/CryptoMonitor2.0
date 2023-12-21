@@ -45,11 +45,11 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
             cell.quantityLabel.text = "\(formattedQuantity)"
         }
         if let price = buyings.price {
-            let formattedPrice = Formatter.shared.formatCurrency("\(price)", useCustomFormatting: true)
+            let formattedPrice = Formatter.shared.formatCurrency("\(price)")
             cell.priceLabel.text = "\(formattedPrice)"
         }
-        let totalCost = viewModel.calculateTotalCost()
-        cell.totalCostLabel.text = Formatter.shared.formatCurrency(totalCost[indexPath.row], useCustomFormatting: true)
+        let totalCost = viewModel.calcCostOfOnePurchase()
+        cell.totalCostLabel.text = Formatter.shared.formatCurrency(totalCost[indexPath.row])
         return cell
     }
     
