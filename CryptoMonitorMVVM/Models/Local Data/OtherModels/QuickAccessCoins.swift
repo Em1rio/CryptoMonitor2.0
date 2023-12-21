@@ -7,3 +7,8 @@
 
 import Foundation
 
+struct QuickAccessCoins: Codable, CoinModel {
+    var nameCoin: String
+    var tiker: String
+    var id: String
+}
