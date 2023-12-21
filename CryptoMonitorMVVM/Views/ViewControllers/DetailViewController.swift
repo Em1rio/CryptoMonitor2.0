@@ -38,23 +38,23 @@ final class DetailViewController: UIViewController {
     }()
 
     private lazy var numberOfCoinsLabel: UILabel = {
-        return createLabel(withText: "0.00000000 BTC", fontSize: 30)
+        return createLabel(withText: "N/A", fontSize: 30)
     }()
     private lazy var coinsValueLabel: UILabel = {
-        return createLabel(withText: "= 100000 $", fontSize: 20)
+        return createLabel(withText: "N/A", fontSize: 20)
     }()
 
     private lazy var averagePriceLabel: UILabel = {
-        return createLabel(withText: "$ 25000,0", fontSize: 15)
+        return createLabel(withText: "N/A", fontSize: 15)
     }()
     private lazy var changeOverTimeLabel: UILabel = {
-        return createLabel(withText: "+ 1000 %", fontSize: 15)
+        return createLabel(withText: "N/A", fontSize: 15)
     }()
     private lazy var marketPriceLabel: UILabel = {
-        return createLabel(withText: "Рыночная", fontSize: 15)
+        return createLabel(withText: "N/A", fontSize: 15)
     }()
     private lazy var changePerDayLabel: UILabel = {
-        return createLabel(withText: "+ 100 %", fontSize: 15)
+        return createLabel(withText: "N/A", fontSize: 15)
     }()
     
     
@@ -83,9 +83,19 @@ final class DetailViewController: UIViewController {
         viewModel.callTableView = { [weak self] in
             self?.tableView.reloadData()
         }
-        viewModel.callBalanceLabel = { [weak self] totalCost in
+        viewModel.callBalanceAndOtherDBLabels = { [weak self] quantity, avrgPrice in
+            DispatchQueue.main.async {
+                self?.numberOfCoinsLabel.text = quantity
+                self?.averagePriceLabel.text = avrgPrice
+            }
+            
+        }
+        viewModel.callMarketDataLabels = { [weak self] totalCost, marketPrice, changeOverTime, changePerDay in
             DispatchQueue.main.async {
                 self?.coinsValueLabel.text = totalCost
+                self?.marketPriceLabel.text = marketPrice
+                self?.changeOverTimeLabel.text = changeOverTime + " %"
+                self?.changePerDayLabel.text = changePerDay + " %"
             }
         }
     }

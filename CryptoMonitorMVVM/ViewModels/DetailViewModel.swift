@@ -10,22 +10,18 @@ import RealmSwift
 
 final class DetailViewModel {
     //TODO:
-    //ЗАпрос маркет прайса
-    //Высчитать среднюю
-   // Настроить таблицу  в которой будут все покупки по выбранному id или имени
-    //Высота ячейки 60
     //Удаление транзацкии и переасчет стоимости актива
-    // Форматировать дату для использования ее в качестве секции в транзакциях
     
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
     private var dataByDate: [Date: [EveryBuying]] = [:]
     var buyings: [EveryBuying] = []
-     var sections: [TransactionSection] = []
-    var callBalanceLabel: ((_ totalCost: String) -> Void)?
+    var sections: [TransactionSection] = []
+    var callBalanceAndOtherDBLabels: ((_ balance: String, _ avrgPrice: String) -> Void)?
+    var callMarketDataLabels: ((_ cost: String, _ marketPrice: String,
+                                _ changeOverTime: String, _ changePerDay: String ) -> Void)?
     var callTableView: (()-> Void)?
-    private var totalCost: Decimal128 = 0.0
     var nameCoin: String = ""
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
@@ -35,60 +31,42 @@ final class DetailViewModel {
     }
     
     public func getDetailData() {
-        fetchDataFromDB()
+        getGeneralData()
+        getTransactionsDetailsFromDB()
         fetchMarketSituation()
-        getAveragePrice() //Пока что только принт
+        
 
     }
-    
-    private func fetchDataFromDB() {
-        let filteredBuyings = dataBaseManager.getRealmQuery(
-            forType: EveryBuying.self,
-            where: "coin",
-            equals: nameCoin)
-        buyings = Array(filteredBuyings)
-        groupTransactionsByDate()
-    }
-    
-    func numberOfSections() -> Int {
-        return sections.count
-    }
-    func calculateTotalCost() -> [String] {
-        return buyings.compactMap { buying in
-            guard let price = buying.price, let quantity = buying.quantity else {
-                return nil
-            }
-            let totalCost = price * quantity
-            return "\(totalCost)"
-        }
-    }
-    private func groupTransactionsByDate() {
-        let groupedTransactions = Dictionary(grouping: buyings, by: { Calendar.current.startOfDay(for: $0.date) })
-        sections = groupedTransactions.map { TransactionSection(date: $0.key, transactions: $0.value) }
-        sections.sort { $0.date < $1.date }
-    }
-    
-    func numberOfRow(_ section: Int) -> Int {
-        guard section < sections.count else { return 0 }
-            return sections[section].transactions.count
-    }
-
-    private func getAveragePrice() {
-        let data = dataBaseManager.getRealmQuery(forType: CoinCategory.self, where: "nameCoin", equals: nameCoin)
-            guard let firstData = data.first else {
-                print("Нет данных для \(nameCoin)")
+    //MARK: - Get Quantity and Average price from Database
+    private func getGeneralData() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {return}
+            let data = self.dataBaseManager.getRealmQuery(
+            forType: CoinCategory.self,
+            where: "nameCoin",
+            equals: self.nameCoin)
+        guard let firstData = data.first else {
+            print("Нет данных для \(self.nameCoin)")
                 return
             }
-            guard let quantity = firstData.coinQuantity?.decimalValue,
+        guard let quantity = firstData.coinQuantity?.decimalValue,
                   let price = firstData.totalSpend?.decimalValue,
                   quantity != 0 else {
                 print("Недостаточно данных для расчета средней цены")
                 return
             }
-            let avrgPrice = price / quantity
-        print("Средняя цена: \(Formatter.shared.formatCurrency("\(avrgPrice)", useCustomFormatting: false))")
-        
+        let avrgPrice = price / quantity
+        let tiker = firstData.symbol
+        let formattedQuantity = Formatter.shared.format("\(quantity)")
+        let formattedAvrgPrice = Formatter.shared.formatCurrencyShort("\(avrgPrice)")
+        self.updateStorageDataUI(with: "\(formattedQuantity) \(tiker)", and: "\(formattedAvrgPrice)")
+        }
     }
+    //MARK: - Updating UI with data from database
+    private func updateStorageDataUI(with quanntity: String, and avrgPrice: String) {
+        self.callBalanceAndOtherDBLabels?(quanntity, avrgPrice)
+     }
+    //MARK: - Requesting current prices from the server for a selected item
     private func fetchMarketSituation() {
         let data = dataBaseManager.getRealmQuery(forType: CoinCategory.self, where: "nameCoin", equals: nameCoin)
         guard let firstData = data.first else {
@@ -98,6 +76,7 @@ final class DetailViewModel {
         let coinId = firstData._id
         fetchData(for: coinId)
     }
+    //MARK: - API request processing
     private func fetchData(for id: String) {
          networkManager.fetchTickerDetails(withID: id) { result in
          switch result {
@@ -113,7 +92,7 @@ final class DetailViewModel {
                  }
              }
      }
-     
+    //MARK: - Preparing data for display
     private func prepareData(_ coin: [OneCoin]) {
         let priceRightNow = try! Decimal128(string: coin.first?.priceUsd ?? "0")
         DispatchQueue.main.async { [weak self] in
@@ -122,22 +101,88 @@ final class DetailViewModel {
                 forType: CoinCategory.self,
                 where: "_id",
                 equals: coinID)
-            
+                
                  if let quantity = realmQuery.first?.coinQuantity {
                     let rawTotalCost = self.calculateTotalCost(priceRightNow, quantity)
-                    self.totalCost += rawTotalCost
-                    let formattedTotalCost = Formatter.shared.formatCurrency("\(self.totalCost)", useCustomFormatting: false)
-                    self.updateUI(with: formattedTotalCost)
+                    let formattedPrice = Formatter.shared.formatCurrency("\(priceRightNow)")
+                    let formattedTotalCost = Formatter.shared.formatCurrencyShort("\(rawTotalCost)")
+                    guard let totalSpend = realmQuery.first?.totalSpend else {
+                               let changeOverTime = "N/A"
+                               self.updateMarketDataUI(
+                                   total: "≈ \(formattedTotalCost)",
+                                   price: formattedPrice,
+                                   change: changeOverTime,
+                                   change24: coin.first?.percentChange24H ?? "N/A")
+                               return
+                           }
+                    let changeOverTime = self.calculatePercentageChange(
+                        priceRightNow, totalSpend, quantity)
+                     self.updateMarketDataUI(
+                        total: "≈ \(formattedTotalCost)",
+                        price: formattedPrice,
+                        change: changeOverTime,
+                        change24: coin.first?.percentChange24H ?? "N/A")
                 } else {
                     return
                 }
             }
          
      }
+    //MARK: - Calculate percentage change over time
+    //TODO: Исправить ошибку при колебаниях стейблкоинов
+    private func calculatePercentageChange(_ price:Decimal128, _ totalSpend: Decimal128, _ quantity: Decimal128 ) -> String {
+        guard totalSpend != 0 && quantity != 0 else { return "\(Decimal128.zero)" }
+        let data = (price - (totalSpend / quantity)) / (totalSpend / quantity) * 100
+        if data < 0 {
+            let changeOverTime = Formatter.shared.formatPercentAndAverage(inputValue: "\(data)")
+            print("- \(changeOverTime)")
+            return "- \(changeOverTime)"
+        } else {
+            let changeOverTime = Formatter.shared.formatPercentAndAverage(inputValue: "\(data)")
+            print("+ \(changeOverTime)")
+            return "+ \(changeOverTime)"
+        }
+    }
+    //MARK: - Calculating the total value of an asset
      private func calculateTotalCost(_ price: Decimal128, _ quantity: Decimal128) -> Decimal128 {
          return price * quantity
      }
-     private func updateUI(with totalCost: String) {
-             self.callBalanceLabel?(totalCost)
+    //MARK: - Updating UI with data from API
+    private func updateMarketDataUI(total totalCost: String, price priceRightNow: String, change overTime: String, change24 perDay: String) {
+        self.callMarketDataLabels?(totalCost, priceRightNow, overTime, perDay)
      }
+    //MARK: - Get all transactions from database and group by date
+    private func getTransactionsDetailsFromDB() {
+        let filteredBuyings = dataBaseManager.getRealmQuery(
+            forType: EveryBuying.self,
+            where: "coin",
+            equals: nameCoin)
+        buyings = Array(filteredBuyings)
+        groupTransactionsByDate()
+    }
+    //MARK: - Grouping method by date
+    private func groupTransactionsByDate() {
+        let groupedTransactions = Dictionary(grouping: buyings, by: { Calendar.current.startOfDay(for: $0.date) })
+        sections = groupedTransactions.map { TransactionSection(date: $0.key, transactions: $0.value) }
+        sections.sort { $0.date < $1.date }
+    }
+    //MARK: - Data for tableView: Sections
+    func numberOfSections() -> Int {
+        return sections.count
+    }
+    //MARK: - Data for tableView: Rows
+    func numberOfRow(_ section: Int) -> Int {
+        guard section < sections.count else { return 0 }
+            return sections[section].transactions.count
+    }
+    //MARK: - Data for tableView: Calculation of the total transaction price
+    func calcCostOfOnePurchase() -> [String] {
+        return buyings.compactMap { buying in
+            guard let price = buying.price, let quantity = buying.quantity else {
+                return nil
+            }
+            let totalCost = price * quantity
+            return "\(totalCost)"
+        }
+    }
 }
