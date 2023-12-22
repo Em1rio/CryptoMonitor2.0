@@ -56,12 +56,21 @@ final class MainViewModel {
                 return "Продажа"
             }
         }
-        dataBaseManager.addTransactionToDatabase(isPurchase: isPurchase, coinId: coinId, coinTiker: coinTiker, coinsName: coinsName, transaction: transaction, howManyValue: quantity, costValue: price)
-        let updatedCoins = updateQuickAccessCoins(newCoin: QuickAccessCoins(nameCoin: data.nameCoin, tiker: data.tiker, id: data.id))
+        dataBaseManager.addTransactionToDatabase(
+            isPurchase: isPurchase,
+            coinId: coinId,
+            coinTiker: coinTiker,
+            coinsName: coinsName,
+            transaction: transaction,
+            howManyValue: quantity,
+            costValue: price)
+        let updatedCoins = updateQuickAccessCoins(
+            newCoin: QuickAccessCoins(nameCoin: data.nameCoin,
+                                      tiker: data.tiker,
+                                      id: data.id))
         quickAccessCoinsCells = updatedCoins // Обновление основного массива
         cellDataSource.value = updatedCoins // Обновление данных для обновления UI
         dataBaseManager.saveQuickAccessCoinsToUserDefaults(updatedCoins)
-        print(cellDataSource)
         
     }
     func updateQuickAccessCoins(newCoin: QuickAccessCoins) -> [QuickAccessCoins] {
