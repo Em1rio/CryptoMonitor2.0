@@ -38,7 +38,7 @@ final class DetailViewController: UIViewController {
     }()
 
     private lazy var numberOfCoinsLabel: UILabel = {
-        return createLabel(withText: "N/A", fontSize: 30)
+        return createLabel(withText: "0", fontSize: 30)
     }()
     private lazy var coinsValueLabel: UILabel = {
         return createLabel(withText: "N/A", fontSize: 20)
