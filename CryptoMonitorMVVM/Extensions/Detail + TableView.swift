@@ -21,9 +21,15 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
             
             return dateFormatter.string(from: sectionDate)
     }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfRow(section)
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       tableView.deselectRow(at: indexPath, animated: true)
+   }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TransactionCell.identifire, for: indexPath) as? TransactionCell else {
@@ -45,15 +51,18 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
             cell.quantityLabel.text = "\(formattedQuantity)"
         }
         if let price = buyings.price {
-            let formattedPrice = Formatter.shared.formatCurrency("\(price)")
+            let formattedPrice = Formatter.shared.formatCurrencyShort("\(price)")
             cell.priceLabel.text = "\(formattedPrice)"
         }
         let totalCost = viewModel.calcCostOfOnePurchase()
-        cell.totalCostLabel.text = Formatter.shared.formatCurrency(totalCost[indexPath.row])
+        cell.totalCostLabel.text = Formatter.shared.formatCurrencyShort(totalCost[indexPath.row])
         return cell
     }
+//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+//    -> UISwipeActionsConfiguration? {
+//
+//    }
+    //TODO: Реализовать удаление и перерасчет монет
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
+    
 }
