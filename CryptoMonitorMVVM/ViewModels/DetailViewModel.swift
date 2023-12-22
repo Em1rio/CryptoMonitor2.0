@@ -33,7 +33,7 @@ final class DetailViewModel {
     public func getDetailData() {
         getGeneralData()
         getTransactionsDetailsFromDB()
-        fetchMarketSituation()
+        getMarketSituation()
         
 
     }
@@ -67,7 +67,7 @@ final class DetailViewModel {
         self.callBalanceAndOtherDBLabels?(quanntity, avrgPrice)
      }
     //MARK: - Requesting current prices from the server for a selected item
-    private func fetchMarketSituation() {
+    private func getMarketSituation() {
         let data = dataBaseManager.getRealmQuery(forType: CoinCategory.self, where: "nameCoin", equals: nameCoin)
         guard let firstData = data.first else {
             print("Нет данных для \(nameCoin)")
@@ -129,18 +129,15 @@ final class DetailViewModel {
          
      }
     //MARK: - Calculate percentage change over time
-    //TODO: Исправить ошибку при колебаниях стейблкоинов
     private func calculatePercentageChange(_ price:Decimal128, _ totalSpend: Decimal128, _ quantity: Decimal128 ) -> String {
         guard totalSpend != 0 && quantity != 0 else { return "\(Decimal128.zero)" }
         let data = (price - (totalSpend / quantity)) / (totalSpend / quantity) * 100
         if data < 0 {
             let changeOverTime = Formatter.shared.formatPercentAndAverage(inputValue: "\(data)")
-            print("- \(changeOverTime)")
-            return "- \(changeOverTime)"
+            return "\(changeOverTime)"
         } else {
             let changeOverTime = Formatter.shared.formatPercentAndAverage(inputValue: "\(data)")
-            print("+ \(changeOverTime)")
-            return "+ \(changeOverTime)"
+            return "+\(changeOverTime)"
         }
     }
     //MARK: - Calculating the total value of an asset
