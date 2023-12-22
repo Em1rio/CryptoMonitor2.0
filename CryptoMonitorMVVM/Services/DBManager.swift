@@ -110,6 +110,12 @@ struct DBManager: DBManagerProtocol {
                         currentCoinQuantity = currentCoinQuantity + howManyValue
                         currentTotalSpend = currentTotalSpend + (howManyValue * costValue)
                     } else {
+                        guard currentCoinQuantity != 0 else {
+                            print("Ошибка: Количество монет не может быть отрицательным.")
+                            //TODO: Подать сигнал об ошибке пользователю
+                            return
+                        }
+                        
                         currentCoinQuantity = currentCoinQuantity - howManyValue
                         currentTotalSpend = currentTotalSpend - (howManyValue * costValue)
                     }
@@ -128,15 +134,16 @@ struct DBManager: DBManagerProtocol {
                     parentCategory._id = coinId
                     parentCategory.symbol = coinTiker
                     parentCategory.nameCoin = coinsName
-                    let currentCoinQuantity = parentCategory.coinQuantity ?? Decimal128(0)
-                    let currentTotalSpend = parentCategory.totalSpend ?? Decimal128(0)
                     
                     if isPurchase {
                         parentCategory.coinQuantity = howManyValue
                         parentCategory.totalSpend = howManyValue * costValue
                     } else {
-                        parentCategory.coinQuantity = currentCoinQuantity - howManyValue
-                        parentCategory.totalSpend = currentTotalSpend - (howManyValue * costValue)
+                        guard parentCategory.coinQuantity != nil else {
+                            print("Ошибка: Количество монет не может быть отрицательным.")
+                    //TODO: Подать сигнал об ошибке пользователю
+                            return
+                        }
                     }
                     
                     // Добавляем транзакцию в список coins
