@@ -58,10 +58,28 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
         cell.totalCostLabel.text = Formatter.shared.formatCurrencyShort(totalCost[indexPath.row])
         return cell
     }
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
-//    -> UISwipeActionsConfiguration? {
-//
-//    }
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] (_, _, completionHandler) in
+                guard let self = self else { return }
+                // Получаем данные о деталях транзакции
+            guard let coin = self.viewModel.getCoin(at: indexPath) else {
+                completionHandler(false) // Не удалось найти coin, отменяем удаление
+                return
+            }
+                // Получаем общие данные о криптовалюте
+            guard let category = self.viewModel.getCoinCategory(for: coin.coin) else {
+                    completionHandler(false) // Не удалось найти категорию, отменяем удаление
+                    return
+                }
+                // Вносим изменения в базу данных
+                self.viewModel.makeChangesToDB(coin, category)
+                completionHandler(true) // Завершаем удаление ячейки
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.backgroundColor = .systemRed
+        let swipeConfiguration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return swipeConfiguration
+    }
     //TODO: Реализовать удаление и перерасчет монет
     
     
