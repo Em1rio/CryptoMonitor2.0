@@ -23,6 +23,8 @@ final class DetailViewModel {
                                 _ changeOverTime: String, _ changePerDay: String ) -> Void)?
     var callTableView: (()-> Void)?
     var nameCoin: String = ""
+    var id: String = ""
+    var tiker: String = ""
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
@@ -56,10 +58,11 @@ final class DetailViewModel {
                 return
             }
         let avrgPrice = price / quantity
-        let tiker = firstData.symbol
+        self.tiker = firstData.symbol
+        self.id = firstData._id
         let formattedQuantity = Formatter.shared.format("\(quantity)")
         let formattedAvrgPrice = Formatter.shared.formatCurrencyShort("\(avrgPrice)")
-        self.updateStorageDataUI(with: "\(formattedQuantity) \(tiker)", and: "\(formattedAvrgPrice)")
+        self.updateStorageDataUI(with: "\(formattedQuantity) \(self.tiker)", and: "\(formattedAvrgPrice)")
         }
     }
     //MARK: - Updating UI with data from database
@@ -182,4 +185,28 @@ final class DetailViewModel {
             return "\(totalCost)"
         }
     }
+
+    func getCoin(at indexPath: IndexPath) -> EveryBuying? {
+        guard indexPath.row < buyings.count else { return nil }
+            let buying = buyings[indexPath.row]
+            return buying
+    }
+    func getCoinCategory(for name: String) -> CoinCategory? {
+        let coinCategory = dataBaseManager.getObject(ofType: CoinCategory.self).filter("nameCoin == %@", name).first
+            return coinCategory
+    }
+  
+    func makeChangesToDB(_ buyings: EveryBuying, _ category: CoinCategory) {
+        let coin = buyings
+        let category = category
+        dataBaseManager.addAndDeleteRealmData(coin, category)
+        getDetailData()
+        //TODO: исправить баг
+        //Если удаляется не по порядку, и получается количество <0,
+        //то getGeneralData() уходит в return и не обновляет данные
+        
+        callTableView?()
+    }
+
+
 }
