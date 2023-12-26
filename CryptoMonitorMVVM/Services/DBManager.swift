@@ -16,7 +16,7 @@ protocol DBManagerProtocol {
     func saveQuickAccessCoinsToUserDefaults(_ coins: [QuickAccessCoins])
     func loadQuickAccessCoinsFromUserDefaults() -> [QuickAccessCoins]
     func getObject<T: Object>(ofType type: T.Type) -> Results<T>
-    
+    func addAndDeleteRealmData(_ buyings: EveryBuying, _ category: CoinCategory)
     
 }
 
@@ -145,7 +145,6 @@ struct DBManager: DBManagerProtocol {
                             return
                         }
                     }
-                    
                     // Добавляем транзакцию в список coins
                     parentCategory.coins.append(value)
                     
@@ -156,6 +155,31 @@ struct DBManager: DBManagerProtocol {
         } catch {
             // Обработка ошибок записи в базу данных
             print("Error writing to database: \(error)")
+        }
+    }
+   
+    func addAndDeleteRealmData(_ buyings: EveryBuying, _ category: CoinCategory) {
+        guard var totalQuantity = category.coinQuantity,
+              var totalSpend = category.totalSpend,
+              let quantityInTransaction = buyings.quantity,
+              let transactionCost = buyings.price else { return }
+        let transactionType = buyings.transaction
+        do {
+            try realm.write {
+               if transactionType == "Продажа" {
+                   totalQuantity += quantityInTransaction
+                   totalSpend += (quantityInTransaction * transactionCost)
+               } else {
+                   totalQuantity -= quantityInTransaction
+                   totalSpend -= (quantityInTransaction * transactionCost)
+               }
+            category.coinQuantity = totalQuantity
+            category.totalSpend = totalSpend
+            realm.delete(buyings)
+            realm.add(category, update: .all)
+           }
+        } catch {
+            print("Ошибка записи в Realm: \(error.localizedDescription)")
         }
     }
     
