@@ -40,7 +40,7 @@ extension AllAssetsViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let coins = viewModel.coinsAsCategory, !coins.isEmpty {
             let pressedCoin = coins[indexPath.row]
-            coordinator?.coordinateToDetail(_with: pressedCoin.nameCoin)
+            coordinator?.coordinateToDetail(with: pressedCoin.nameCoin)
             
         }
         

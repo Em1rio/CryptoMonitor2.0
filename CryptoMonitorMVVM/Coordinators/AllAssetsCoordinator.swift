@@ -35,7 +35,7 @@ final class AllAssetsCoordinator: Coordinator {
 }
 
 extension AllAssetsCoordinator {
-    func coordinateToDetail(_with tiker: String) {
+    func coordinateToDetail(with tiker: String) {
 
         let detailCoordinator = DetailCoordinator(
             navigationController, networkManager, dataBaseManager)
