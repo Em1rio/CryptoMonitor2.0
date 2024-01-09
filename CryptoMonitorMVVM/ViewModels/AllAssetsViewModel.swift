@@ -8,6 +8,8 @@
 import Foundation
 import RealmSwift
 
+//TODO: 
+//Без интернета показывается стоимость которую расчитал пока интернет был, нужно показывать уведобление что цена не актуальная, подключите интернет
 final class AllAssetsViewModel {
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
