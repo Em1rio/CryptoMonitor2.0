@@ -174,8 +174,8 @@
             filePath = "CryptoMonitorMVVM/ViewModels/AllAssetsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "coinsData(_:for:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -190,8 +190,8 @@
             filePath = "CryptoMonitorMVVM/ViewModels/AllAssetsViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
             landmarkName = "coinsData(_:for:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -224,7 +224,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "39"
             endingLineNumber = "39"
-            landmarkName = "coordinateToDetail(_with:)"
+            landmarkName = "coordinateToDetail(with:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -258,181 +258,6 @@
                   offsetFromSymbolStart = "527">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "23228B8F-C753-4BC5-9B34-F8415DDD41B1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "23228B8F-C753-4BC5-9B34-F8415DDD41B1 - ffe42afd97cd3a0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 (Swift.String, Swift.String) -&gt; () in CryptoMonitorMVVM.DetailViewController.viewWillAppear(Swift.Bool) -&gt; ()"
-                  moduleName = "CryptoMonitorMVVM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/SSD/Development/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B/CryptoMonitorMVVM/CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "87"
-                  endingLineNumber = "87"
-                  offsetFromSymbolStart = "253">
-               </Location>
-               <Location
-                  uuid = "23228B8F-C753-4BC5-9B34-F8415DDD41B1 - a6c1d1e2d653ab1e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #2 (Swift.String, Swift.String) -&gt; () in CryptoMonitorMVVM.DetailViewController.viewWillAppear(Swift.Bool) -&gt; ()"
-                  moduleName = "CryptoMonitorMVVM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/SSD/Development/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B/CryptoMonitorMVVM/CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "86"
-                  endingLineNumber = "86"
-                  offsetFromSymbolStart = "125">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ED755485-6BA0-4116-8940-5CE7AA2FF058"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C7665184-4798-4BD5-8D40-58C3F4D36F78"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2046A632-DC35-4BC8-88E3-5A4FF2307EBC"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2046A632-DC35-4BC8-88E3-5A4FF2307EBC - cd6e31500e47a45a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CryptoMonitorMVVM.DetailViewController.viewWillAppear(Swift.Bool) -&gt; ()"
-                  moduleName = "CryptoMonitorMVVM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/SSD/Development/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B/CryptoMonitorMVVM/CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "86"
-                  endingLineNumber = "86"
-                  offsetFromSymbolStart = "531">
-               </Location>
-               <Location
-                  uuid = "2046A632-DC35-4BC8-88E3-5A4FF2307EBC - ffe42afd97cd3c1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 (Swift.String, Swift.String) -&gt; () in CryptoMonitorMVVM.DetailViewController.viewWillAppear(Swift.Bool) -&gt; ()"
-                  moduleName = "CryptoMonitorMVVM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/SSD/Development/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B/CryptoMonitorMVVM/CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "86"
-                  endingLineNumber = "86"
-                  offsetFromSymbolStart = "245">
-               </Location>
-               <Location
-                  uuid = "2046A632-DC35-4BC8-88E3-5A4FF2307EBC - a6c1d1e2d653ab1e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #2 (Swift.String, Swift.String) -&gt; () in CryptoMonitorMVVM.DetailViewController.viewWillAppear(Swift.Bool) -&gt; ()"
-                  moduleName = "CryptoMonitorMVVM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/SSD/Development/%D0%9F%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D1%8B/CryptoMonitorMVVM/CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "86"
-                  endingLineNumber = "86"
-                  offsetFromSymbolStart = "125">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "32A0F548-664D-4946-8E4E-084798476AAF"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3ADF714A-6A60-4DB6-87B6-801972D36917"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CryptoMonitorMVVM/Views/ViewControllers/DetailViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

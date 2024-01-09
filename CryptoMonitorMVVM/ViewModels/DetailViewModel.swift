@@ -10,9 +10,7 @@ import RealmSwift
 
 final class DetailViewModel {
     //TODO:
-    //Удаление транзацкии и переасчет стоимости актива
     //Уведомлять о том что нет интренета и поэтому показываны N/A
-    //Основной лейбл и средняя цена
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
