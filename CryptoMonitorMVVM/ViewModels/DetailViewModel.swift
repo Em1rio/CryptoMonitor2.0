@@ -11,7 +11,8 @@ import RealmSwift
 final class DetailViewModel {
     //TODO:
     //Удаление транзацкии и переасчет стоимости актива
-    
+    //Уведомлять о том что нет интренета и поэтому показываны N/A
+    //Основной лейбл и средняя цена
     // MARK: - Variables
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
@@ -54,6 +55,7 @@ final class DetailViewModel {
         guard let quantity = firstData.coinQuantity?.decimalValue,
                   let price = firstData.totalSpend?.decimalValue,
                   quantity != 0 else {
+            self.updateStorageDataUI(with: "0", and: "0")
                 print("Недостаточно данных для расчета средней цены")
                 return
             }
@@ -201,10 +203,6 @@ final class DetailViewModel {
         let category = category
         dataBaseManager.addAndDeleteRealmData(coin, category)
         getDetailData()
-        //TODO: исправить баг
-        //Если удаляется не по порядку, и получается количество <0,
-        //то getGeneralData() уходит в return и не обновляет данные
-        
         callTableView?()
     }
 
