@@ -18,7 +18,7 @@ final class MainViewController: UIViewController {
     let quantityLabelObservable = Observable<String>("0.0")
     let priceLabelObservable = Observable<String>("0.0")
     var isPurchase = true
-
+    let generator = UINotificationFeedbackGenerator()
     
     var containerForData: String = ""
     // MARK: - UI Components
@@ -215,7 +215,6 @@ final class MainViewController: UIViewController {
         self.view.addSubview(SellOrBuyMode)
         self.SellOrBuyMode.addTarget(self, action: #selector(sellOrBuyModeValueChanged), for: .valueChanged)
         self.SellOrBuyMode.translatesAutoresizingMaskIntoConstraints = false
-//        let spacingFromTop = view.bounds.height * 0.015
         
         NSLayoutConstraint.activate([
             self.SellOrBuyMode.topAnchor.constraint(

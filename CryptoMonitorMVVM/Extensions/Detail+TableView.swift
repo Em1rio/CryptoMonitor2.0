@@ -58,6 +58,18 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
         cell.totalCostLabel.text = Formatter.shared.formatCurrencyShort(totalCost[indexPath.row])
         return cell
     }
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        // Получаем количество ячеек в текущей секции
+        let rowsInSection = tableView.numberOfRows(inSection: indexPath.section)
+        // Проверяем, является ли ячейка последней в секции
+        if indexPath.row == rowsInSection - 1 {
+            // Разрешаем редактирование (свайп) для последней ячейки
+            return true
+        } else {
+            // Запрещаем редактирование (свайп) для остальных ячеек
+            return false
+        }
+    }
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] (_, _, completionHandler) in
                 guard let self = self else { return }
