@@ -11,11 +11,6 @@ final class DetailViewController: UIViewController {
     // MARK: - Variables
     private(set) var viewModel: DetailViewModel
     weak var coordinator: DetailCoordinator?
-    
-    // MARK: - UI Components
-    //TODO:
-    // Разместить все лейблы во вьюхах
-    // Настроить лейблы в таблице
 
     // MARK: - UI Components
     private lazy var displayView: UIView = {
@@ -72,13 +67,8 @@ final class DetailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
+        coordinator?.navigationController.setNavigationBarHidden(false, animated: false)
         viewModel.getDetailData()
         viewModel.callTableView = { [weak self] in
             self?.tableView.reloadData()
@@ -99,7 +89,14 @@ final class DetailViewController: UIViewController {
             }
         }
     }
-    override func viewWillDisappear(_ animated: Bool) {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+    }
+    
+
+    override func viewDidDisappear(_ animated: Bool) {
         coordinator?.navigationController.setNavigationBarHidden(true, animated: false)
     }
     // MARK: - UI Setup

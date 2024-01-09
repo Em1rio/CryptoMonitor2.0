@@ -48,6 +48,7 @@ final class AllAssetsViewController: UIViewController {
         setupUI()
     }
     override func viewWillAppear(_ animated: Bool) {
+        coordinator?.navigationController.setNavigationBarHidden(true, animated: false)
         viewModel.loadDataFromDatabase()
         viewModel.callTableView = { [weak self] in
             self?.tableView.reloadData()
