@@ -32,8 +32,6 @@ final class DetailCoordinator: Coordinator {
         detailViewController.title = "\(title)"
         datailViewModel.nameCoin = "\(title)"
         navigationController.pushViewController(detailViewController, animated: true)
-        navigationController.setNavigationBarHidden(false, animated: false)
-        
         
     }
    
