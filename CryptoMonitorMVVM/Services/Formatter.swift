@@ -8,62 +8,64 @@
 import Foundation
 
 final class Formatter {
-
+    
     static let shared = Formatter()
-
+    
     private init() { }
-
-    func format(_ inputValue: String) -> String {
-
-        let value = Decimal(string: inputValue )
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.maximumFractionDigits = 16
-        return numberFormatter.string(for: value)!
+    enum NumberFormat {
+        case standard
+        case percent
+        case currencyShort
+        case currency
     }
-    func formatPercentAndAverage(inputValue: String) -> String {
-
-        let value = Decimal(string: inputValue )
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.maximumFractionDigits = 2
-        return numberFormatter.string(for: value)!
-    }
-    func formatCurrencyShort(_ inputValue: String) -> String {
-            let value = Decimal(string: inputValue)
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .currency
-            numberFormatter.maximumFractionDigits = 2
-            numberFormatter.locale = Locale(identifier: "es_CL")
-            return numberFormatter.string(for: value)!
-        }
-
-    func formatCurrency(_ inputValue: String) -> String {
+    
+    func format(_ inputValue: String, format: NumberFormat = .standard) -> String {
         guard let value = Decimal(string: inputValue) else {
             return "Invalid input"
         }
-
+        
         let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .currency
-        numberFormatter.locale = Locale(identifier: "es_CL")
-        numberFormatter.maximumSignificantDigits = 10
-        var formattedValue = numberFormatter.string(for: value) ?? "Error formatting"
-
-        // Если число меньше 1 или его длина больше 10, показываем его полностью
+        
+        switch format {
+        case .standard:
+            configureNumberFormatter(numberFormatter, style: .decimal, maxDigits: 16)
+        case .percent:
+            configureNumberFormatter(numberFormatter, style: .decimal, maxDigits: 2)
+        case .currencyShort:
+            numberFormatter.locale = Locale(identifier: "es_CL")
+            configureNumberFormatter(numberFormatter, style: .currency, maxDigits: 5)
+            return formatCurrency(value, numberFormatter: numberFormatter)
+        case .currency:
+            numberFormatter.locale = Locale(identifier: "es_CL")
+            configureNumberFormatter(numberFormatter, style: .currency, maxDigits: 10)
+            return formatCurrency(value, numberFormatter: numberFormatter)
+        }
+        
+        return numberFormatter.string(for: value) ?? "Error formatting"
+    }
+    
+    private func configureNumberFormatter(_ formatter: NumberFormatter, style: NumberFormatter.Style, maxDigits: Int) {
+        formatter.numberStyle = style
+        formatter.maximumSignificantDigits = maxDigits
+    }
+    
+    private func formatCurrency(_ value: Decimal, numberFormatter: NumberFormatter) -> String {
+        guard var formattedValue = numberFormatter.string(for: value) else {
+            return "Error formatting"
+        }
         if abs(value) < 1 || formattedValue.count > 10 {
-            formattedValue = formattedValue.trimmingCharacters(in: .whitespaces)
+            formattedValue =  formattedValue.trimmingCharacters(in: .whitespaces)
         } else {
-            // Убираем завершающие нули после точки
-            let components = formattedValue.components(separatedBy: ".")
-            if components.count == 2, let fractionPart = components.last {
+            let components = formattedValue.components(separatedBy: ",")
+            if components.count == 2, let integerPart = components.first, let fractionPart = components.last {
                 var trimmedFraction = fractionPart
                 while trimmedFraction.hasSuffix("0") {
                     trimmedFraction = String(trimmedFraction.dropLast())
                 }
-                formattedValue = components.first! + (trimmedFraction.isEmpty ? "" : "." + trimmedFraction)
+                let formattedInteger = integerPart.isEmpty ? "0" : integerPart
+                formattedValue = formattedInteger + (trimmedFraction.isEmpty ? "" : "," + trimmedFraction)
             }
         }
-
         return formattedValue
     }
 }
