@@ -8,15 +8,15 @@
 import UIKit
 
 protocol Coordinator: AnyObject {
-    //var parentCoordinator: Coordinator? { get set }
+    var parentCoordinator: Coordinator? { get set }
     var childCoordinators: [Coordinator] { get set }
     func start()
-    func removeChildCoordinator(_ coordinator: Coordinator)
-    func removeAllChildCoordinators()
+    func childDidFinish(_ child: Coordinator?)
 }
 
 final class AppCoordinator: Coordinator {
     // MARK: - Variables
+    var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     var window: UIWindow?
@@ -35,17 +35,23 @@ final class AppCoordinator: Coordinator {
     func start() {
         let tabBarCoordinator = TabBarCoordinator(
             navigationController, networkManager, dataBaseManager)
+        tabBarCoordinator.parentCoordinator = self
         tabBarCoordinator.start()
         childCoordinators.append(tabBarCoordinator)
-        }
-
-}
-    // MARK: - Actions
-extension Coordinator {
-    func removeChildCoordinator(_ coordinator: Coordinator) {
-        childCoordinators = childCoordinators.filter { $0 !== coordinator}
     }
-    func removeAllChildCoordinators() {
-        childCoordinators.removeAll()
+    
+}
+// MARK: - Default values and methods for protocol
+extension Coordinator {
+    var parentCoordinator: Coordinator? { nil }
+    
+    func childDidFinish(_ child: Coordinator?) {
+        for (index, coordinator) in
+                childCoordinators.enumerated() {
+            if coordinator === child {
+                childCoordinators.remove(at: index)
+                break
+            }
+        }
     }
 }

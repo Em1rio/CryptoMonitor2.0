@@ -9,8 +9,9 @@ import Foundation
 import UIKit
 
 final class AllAssetsCoordinator: Coordinator {
+    
     // MARK: - Variables
-    var parentCoordinator: TabBarCoordinator?
+    var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     private var networkManager: NetworkManagerProtocol
@@ -19,38 +20,26 @@ final class AllAssetsCoordinator: Coordinator {
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
-            self.navigationController = navigationController
-            self.networkManager = networkManager
-            self.dataBaseManager = dataBaseManager
-        }
+        self.navigationController = navigationController
+        self.networkManager = networkManager
+        self.dataBaseManager = dataBaseManager
+    }
     // MARK: - Setup
     func start() {
         let allAssetsViewModel = AllAssetsViewModel(networkManager, dataBaseManager)
         let allAssetsViewController = AllAssetsViewController(allAssetsViewModel, coordinator: self)
         navigationController.setViewControllers([allAssetsViewController], animated: true)
         navigationController.setNavigationBarHidden(true, animated: false)
-        parentCoordinator?.childCoordinators.append(self)
     }
-
 }
 
 extension AllAssetsCoordinator {
     func coordinateToDetail(with tiker: String) {
-
         let detailCoordinator = DetailCoordinator(
             navigationController, networkManager, dataBaseManager)
         detailCoordinator.parentCoordinator = self
-        childCoordinators.append(detailCoordinator)
         detailCoordinator.title = tiker
         detailCoordinator.start()
-    }
-    func childDidFinish(_ child: Coordinator?) {
-        for (index, coordinator) in
-                childCoordinators.enumerated() {
-            if coordinator === child {
-                childCoordinators.remove(at: index)
-                break
-            }
-        }
+        childCoordinators.append(detailCoordinator)
     }
 }

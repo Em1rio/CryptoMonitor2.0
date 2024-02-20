@@ -10,8 +10,8 @@ import UIKit
 
 final class TabBarCoordinator: Coordinator {
     // MARK: - Variables
-    var parentCoordinator: AppCoordinator?
-    var childCoordinators = [Coordinator]()
+    var parentCoordinator: Coordinator?
+    var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     private var networkManager: NetworkManagerProtocol
     private var dataBaseManager: DBManagerProtocol
@@ -19,39 +19,37 @@ final class TabBarCoordinator: Coordinator {
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
-            self.navigationController = navigationController
-            self.networkManager = networkManager
-            self.dataBaseManager = dataBaseManager
-        }
+        self.navigationController = navigationController
+        self.networkManager = networkManager
+        self.dataBaseManager = dataBaseManager
+    }
     // MARK: - Setup
     func start() {
         let mainCoordinator = MainCoordinator(
             navigationController, networkManager, dataBaseManager)
         let allAssetsCoordinator = AllAssetsCoordinator(
             navigationController, networkManager, dataBaseManager)
-        childCoordinators.append(mainCoordinator)
-        childCoordinators.append(allAssetsCoordinator)
-        let tabBarController = TabBarController(childCoordinators: childCoordinators, networkManager: networkManager, dataBaseManager: dataBaseManager)
+        mainCoordinator.parentCoordinator = self
+        allAssetsCoordinator.parentCoordinator = self
         
-        // Создаем и добавляем вкладки в TabBarController
+        
         let mainTab = UITabBarItem(title: "Запись", image: UIImage(systemName: "entry.lever.keypad"), tag: 0)
         let mainViewModel = MainViewModel(networkManager, dataBaseManager)
         let mainVC = MainViewController(mainViewModel, coordinator: mainCoordinator)
         mainVC.tabBarItem = mainTab
         mainCoordinator.start()
-
+        
         let allAssetsTab = UITabBarItem(title: "Кошелёк", image: UIImage(systemName: "bitcoinsign"), tag: 1)
         let allAssetsViewModel = AllAssetsViewModel(networkManager, dataBaseManager)
         let allAssetsVC = AllAssetsViewController(allAssetsViewModel, coordinator: allAssetsCoordinator)
         allAssetsVC.tabBarItem = allAssetsTab
         allAssetsCoordinator.start()
-
+        childCoordinators.append(mainCoordinator)
+        childCoordinators.append(allAssetsCoordinator)
         
+        
+        let tabBarController = TabBarController(childCoordinators: childCoordinators, networkManager: networkManager, dataBaseManager: dataBaseManager)
         navigationController.setViewControllers([tabBarController], animated: true)
         tabBarController.viewControllers = [mainVC, allAssetsVC]
-        
-            
     }
-    
-    
 }

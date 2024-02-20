@@ -10,7 +10,7 @@ import UIKit
 
 final class DetailCoordinator: Coordinator {
     // MARK: - Variables
-    weak var parentCoordinator: AllAssetsCoordinator?
+    weak var parentCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     private var networkManager: NetworkManagerProtocol
@@ -20,10 +20,10 @@ final class DetailCoordinator: Coordinator {
     init(_ navigationController: UINavigationController,
          _ networkManager: NetworkManagerProtocol,
          _ dataBaseManager: DBManagerProtocol) {
-            self.navigationController = navigationController
-            self.networkManager = networkManager
-            self.dataBaseManager = dataBaseManager
-        }
+        self.navigationController = navigationController
+        self.networkManager = networkManager
+        self.dataBaseManager = dataBaseManager
+    }
     
     // MARK: - Setup
     func start() {
@@ -34,7 +34,12 @@ final class DetailCoordinator: Coordinator {
         navigationController.pushViewController(detailViewController, animated: true)
         
     }
-   
+    // MARK: - Actions
+    func didFinish() {
+        guard let parentCoordinator = parentCoordinator as? AllAssetsCoordinator else { return }
+        parentCoordinator.childDidFinish(self)
+    }
+    
     
     
 }
