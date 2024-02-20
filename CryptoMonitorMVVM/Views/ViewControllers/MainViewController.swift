@@ -19,36 +19,51 @@ final class MainViewController: UIViewController {
     let priceLabelObservable = Observable<String>("0.0")
     var isPurchase = true
     let generator = UINotificationFeedbackGenerator()
-    
-    var containerForData: String = ""
+
     // MARK: - UI Components
+    private let checkmarkContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.cornerRadius = 16
+        view.isHidden = true
+        return view
+    }()
+    
+    private let checkmarkImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "checkmark")
+        imageView.contentMode = .scaleToFill
+        imageView.isHidden = true
+        return imageView
+    }()
+    
     private let SellOrBuyMode: UISegmentedControl = {
         let segmentControl = UISegmentedControl()
         segmentControl.insertSegment(withTitle: "Купил", at: 0, animated: true)
         segmentControl.insertSegment(withTitle: "Продал", at: 1, animated: true)
         segmentControl.selectedSegmentIndex = 0
         segmentControl.selectedSegmentTintColor = .systemGray5
-       
         return segmentControl
     }()
     
     private let displayView: UIView = {
-       let view = UIView()
+        let view = UIView()
         view.backgroundColor = .systemGray6
         view.layer.borderWidth = 1
         view.layer.borderColor = UIColor.green.cgColor
         view.layer.cornerRadius = 16
         return view
     }()
+    
     private let quantityLabel: UILabel = {
         let label = UILabel()
         label.text = "0.0"
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 20, weight: .regular)
         label.setContentHuggingPriority(UILayoutPriority(250), for: .horizontal)
-
         return label
     }()
+    
     private let priceLabel: UILabel = {
         let label = UILabel()
         label.text = "0.0"
@@ -59,7 +74,6 @@ final class MainViewController: UIViewController {
     }()
     
     private(set) var LabelSelection: UISegmentedControl = {
-        
         let segmentControl = UISegmentedControl()
         segmentControl.insertSegment(withTitle: "Количество", at: 0, animated: true)
         segmentControl.insertSegment(withTitle: "Цена", at: 1, animated: true)
@@ -69,12 +83,13 @@ final class MainViewController: UIViewController {
     }()
     
     private let numPadContainerView: UIView = {
-       let view = UIView()
+        let view = UIView()
         return view
     }()
+    
     public var numPadContainerSize: CGSize {
         return numPadContainerView.frame.size
-        }
+    }
     
     private(set) var numPadCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -84,39 +99,40 @@ final class MainViewController: UIViewController {
         collectionView.register(NumberPadCell.self, forCellWithReuseIdentifier: NumberPadCell.identifire)
         return collectionView
     }()
+    
     private let coinContainerView: UIView = {
         let view = UIView()
         return view
     }()
+    
     public var coinContainerViewSize: CGSize {
         return coinContainerView.frame.size
-        }
+    }
+    
     private(set) var coinCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let coinCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         coinCollectionView.backgroundColor = .systemBackground
-        coinCollectionView.register(CoinButtonCell.self, forCellWithReuseIdentifier: CoinButtonCell.identifire)
-        coinCollectionView.register(ShowAllButtonCell.self, forCellWithReuseIdentifier: ShowAllButtonCell.identifire)
+        coinCollectionView.register(
+            CoinButtonCell.self, forCellWithReuseIdentifier: CoinButtonCell.identifire)
+        coinCollectionView.register(
+            ShowAllButtonCell.self, forCellWithReuseIdentifier: ShowAllButtonCell.identifire)
         return coinCollectionView
     }()
     
     // MARK: - Lifecycle
-
-
-
     init(_ viewModel: MainViewModel, coordinator: MainCoordinator) {
         self.viewModel = viewModel
         self.coordinator = coordinator
-        
         super.init(nibName: nil, bundle: nil)
         self.title = "Запись"
     }
     
     required init?(coder: NSCoder) {
-        
         fatalError("init(coder:) has not been implemented")
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,7 +140,6 @@ final class MainViewController: UIViewController {
         bindLabels()
         bindQuickAccessButtons()
     }
-
     
     // MARK: - Actions
     @objc func sellOrBuyModeValueChanged() {
@@ -151,44 +166,56 @@ final class MainViewController: UIViewController {
         default:
             break
         }
+    }
     
+    func showCheckmark() {
+        self.checkmarkContainerView.isHidden = false
+        self.checkmarkContainerView.alpha = 0.0
+        self.checkmarkImageView.isHidden = false
+        self.checkmarkImageView.alpha = 0.0
+        UIView.animate(withDuration: 0.5, animations: {
+            self.checkmarkContainerView.alpha = 1.0
+            self.checkmarkImageView.alpha = 1.0
+        }){ (_) in
+            UIView.animate(withDuration: 0.5, animations: {
+                self.checkmarkContainerView.alpha = 0.0
+                self.checkmarkImageView.alpha = 0.0
+            })
+        }
     }
     
     @objc func labelSelectionValueChanged() {
-  
         let selectedSegmentIndex = LabelSelection.selectedSegmentIndex
-        
         switch selectedSegmentIndex {
         case 0:
             quantityLabel.textColor = .label
             priceLabel.textColor = .systemGray
             self.viewModel.isFirstInteractionWithNumPad = true
-          
         case 1:
             quantityLabel.textColor = .systemGray
             priceLabel.textColor = .label
             self.viewModel.isFirstInteractionWithNumPad = true
-           
         default:
             break
         }
-    
     }
+    
     func setLabelsOnDefaultState() {
         self.LabelSelection.selectedSegmentIndex = 0
         self.labelSelectionValueChanged()
         self.quantityLabelObservable.value = "0.0"
         self.priceLabelObservable.value = "0.0"
     }
+    
     private func bindLabels() {
         quantityLabelObservable.bind { [weak self] text in
             self?.quantityLabel.text = text
         }
-
         priceLabelObservable.bind { [weak self] text in
             self?.priceLabel.text = text
         }
     }
+    
     private func bindQuickAccessButtons() {
         viewModel.cellDataSource.bind { [weak self] QuickAccessCoins  in
             guard let self, let QuickAccessCoins else {return}
@@ -196,8 +223,7 @@ final class MainViewController: UIViewController {
             self.coinCollectionView.reloadData()
         }
     }
-
-
+    
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = .systemBackground
@@ -207,13 +233,44 @@ final class MainViewController: UIViewController {
         setupLabelSelection()
         setupNumPadContainerView()
         setupNumPadCollectionView()
+        setupCheckmarkConteinerView()
+        setupCheckmarkImageView()
         setupCoinContainerView()
         setupCoinCollectionView()
     }
     
+    private func setupCheckmarkConteinerView() {
+        self.numPadCollectionView.addSubview(checkmarkContainerView)
+        self.checkmarkContainerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            self.checkmarkContainerView.centerXAnchor.constraint(equalTo: numPadCollectionView.centerXAnchor),
+            self.checkmarkContainerView.centerYAnchor.constraint(equalTo: numPadCollectionView.centerYAnchor),
+            self.checkmarkContainerView.widthAnchor.constraint(equalToConstant: 70),
+            self.checkmarkContainerView.heightAnchor.constraint(equalToConstant: 70)
+        ])
+    }
+    
+    private func setupCheckmarkImageView() {
+        self.checkmarkContainerView.addSubview(checkmarkImageView)
+        self.checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
+        let imageInset: CGFloat = 10
+        NSLayoutConstraint.activate([
+            checkmarkImageView.topAnchor.constraint(
+                equalTo: checkmarkContainerView.topAnchor, constant: imageInset),
+            checkmarkImageView.leadingAnchor.constraint(
+                equalTo: checkmarkContainerView.leadingAnchor, constant: imageInset),
+            checkmarkImageView.trailingAnchor.constraint(
+                equalTo: checkmarkContainerView.trailingAnchor, constant: -imageInset),
+            checkmarkImageView.bottomAnchor.constraint(
+                equalTo: checkmarkContainerView.bottomAnchor, constant: -imageInset)
+        ])
+    }
+    
     private func setupSellOrBuyMode() {
         self.view.addSubview(SellOrBuyMode)
-        self.SellOrBuyMode.addTarget(self, action: #selector(sellOrBuyModeValueChanged), for: .valueChanged)
+        self.SellOrBuyMode.addTarget(
+            self, action: #selector(sellOrBuyModeValueChanged), for: .valueChanged)
         self.SellOrBuyMode.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -225,6 +282,7 @@ final class MainViewController: UIViewController {
                 equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10)
         ])
     }
+    
     private func setupDisplayView() {
         self.view.addSubview(displayView)
         self.displayView.translatesAutoresizingMaskIntoConstraints = false
@@ -240,6 +298,7 @@ final class MainViewController: UIViewController {
                 equalTo: view.heightAnchor, multiplier: 0.1)
         ])
     }
+    
     private func setupLabels() {
         self.displayView.addSubview(quantityLabel)
         self.displayView.addSubview(priceLabel)
@@ -250,19 +309,26 @@ final class MainViewController: UIViewController {
         self.priceLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            self.quantityLabel.centerYAnchor.constraint(equalTo: self.displayView.centerYAnchor),
-            self.quantityLabel.leadingAnchor.constraint(equalTo: self.displayView.leadingAnchor, constant: 8),
-            self.quantityLabel.widthAnchor.constraint(greaterThanOrEqualTo: self.displayView.widthAnchor, multiplier: 0.5),
+            self.quantityLabel.centerYAnchor.constraint(
+                equalTo: self.displayView.centerYAnchor),
+            self.quantityLabel.leadingAnchor.constraint(
+                equalTo: self.displayView.leadingAnchor, constant: 8),
+            self.quantityLabel.widthAnchor.constraint(
+                greaterThanOrEqualTo: self.displayView.widthAnchor, multiplier: 0.5),
             
-            self.priceLabel.centerYAnchor.constraint(equalTo: self.displayView.centerYAnchor),
-            self.priceLabel.trailingAnchor.constraint(equalTo:  self.displayView.trailingAnchor, constant: -8),
-            self.priceLabel.widthAnchor.constraint(greaterThanOrEqualTo: self.displayView.widthAnchor, multiplier: 0.5),
-            
+            self.priceLabel.centerYAnchor.constraint(
+                equalTo: self.displayView.centerYAnchor),
+            self.priceLabel.trailingAnchor.constraint(
+                equalTo:  self.displayView.trailingAnchor, constant: -8),
+            self.priceLabel.widthAnchor.constraint(
+                greaterThanOrEqualTo: self.displayView.widthAnchor, multiplier: 0.5),
         ])
     }
+    
     private func setupLabelSelection() {
         self.view.addSubview(LabelSelection)
-        self.LabelSelection.addTarget(self, action: #selector(labelSelectionValueChanged), for: .valueChanged)
+        self.LabelSelection.addTarget(
+            self, action: #selector(labelSelectionValueChanged), for: .valueChanged)
         self.LabelSelection.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -276,9 +342,9 @@ final class MainViewController: UIViewController {
                 equalTo: view.heightAnchor, multiplier: 0.0464768),
             self.LabelSelection.centerXAnchor.constraint(
                 equalTo: displayView.centerXAnchor),
-            
         ])
     }
+    
     private func setupNumPadContainerView() {
         self.view.addSubview(numPadContainerView)
         self.numPadContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -294,6 +360,7 @@ final class MainViewController: UIViewController {
                 equalTo: view.heightAnchor, multiplier: 0.4)
         ])
     }
+    
     private func setupNumPadCollectionView() {
         self.numPadCollectionView.dataSource = self
         self.numPadCollectionView.delegate = self
@@ -327,6 +394,7 @@ final class MainViewController: UIViewController {
                 equalTo: view.heightAnchor, multiplier: 0.15)
         ])
     }
+    
     private func setupCoinCollectionView() {
         self.coinCollectionView.dataSource = self
         self.coinCollectionView.delegate = self
@@ -344,7 +412,5 @@ final class MainViewController: UIViewController {
                 equalTo: self.coinContainerView.bottomAnchor)
         ])
     }
-    
-
 }
 
