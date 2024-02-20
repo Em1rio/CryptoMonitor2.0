@@ -14,24 +14,24 @@ final class AllCoinsViewController: UIViewController {
     private var cellDataSource = [AllCoinsCellModel]()
     private let activityIndicator = UIActivityIndicatorView()
     var dataFromSelected: ((AllCoinsCellModel) -> Void)?
-
-
+    
     // MARK: - UI Components
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
+    
     // MARK: - Lifecycle
     init(_ viewModel: AllCoinsViewModel, coordinator: AllCoinsCoordinator) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,34 +39,28 @@ final class AllCoinsViewController: UIViewController {
         bindViewModel()
         viewModel.loadData()
         
-        
-
-
-        
     }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         coordinator?.didFinish()
-    }
-    deinit {
-
+        
     }
     // MARK: - Actions
-
     private func bindViewModel() {
-//        viewModel.isBadConnection.bind { [weak self] isBadConnection in
-//            guard let self else {return}
-//            DispatchQueue.main.async {
-//                if let isBadConnection = isBadConnection, isBadConnection {
-//                    self.showNoInternetConnectionAlert()
-//                }
-//            }
-//        }
+        viewModel.isBadConnection.bind { [weak self] isBadConnection in
+            guard let self else {return}
+            DispatchQueue.main.async {
+                if let isBadConnection = isBadConnection, isBadConnection {
+                    self.showNoInternetConnectionAlert()
+                }
+            }
+        }
         
         viewModel.isLoading.bind { [weak self] isLoading in
             guard let self, let isLoading else {return}
             DispatchQueue.main.async {
-            isLoading ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
+                isLoading ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
             }
         }
         viewModel.cellDataSource.bind { [weak self] AllCoinsCellModel in
@@ -75,17 +69,13 @@ final class AllCoinsViewController: UIViewController {
             self.reloadData()
         }
     }
-    private func checkInternetConnection() {
-        
-    }
+
     private func showNoInternetConnectionAlert() {
         let alert = UIAlertController(
             title: "Нет соединения", message: "Требуется подключение к интернету для загрузки данных", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alert, animated: true)
-
     }
-
     
     // MARK: - Setup UI
     private func setupUI() {
@@ -93,6 +83,7 @@ final class AllCoinsViewController: UIViewController {
         setupTableView()
         setupIndicator()
     }
+    
     private func setupTableView() {
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -110,6 +101,7 @@ final class AllCoinsViewController: UIViewController {
                 equalTo: view.trailingAnchor)
         ])
     }
+    
     private func setupIndicator() {
         self.view.addSubview(activityIndicator)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -127,6 +119,7 @@ extension AllCoinsViewController: UITableViewDelegate, UITableViewDataSource {
             self.tableView.reloadData()
         }
     }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfRow(section)
     }
@@ -140,6 +133,7 @@ extension AllCoinsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.contentConfiguration = content
         return cell
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = cellDataSource[indexPath.row]
         dataFromSelected?(selectedItem)
