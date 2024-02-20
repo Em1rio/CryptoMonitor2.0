@@ -6,6 +6,7 @@
 //
 
 import UIKit
+//TODO: Процентное изменение общей стоимости портфеля
 
 final class AllAssetsViewController: UIViewController {
     // MARK: - Variables
@@ -14,10 +15,11 @@ final class AllAssetsViewController: UIViewController {
     
     // MARK: - UI Components
     private(set) lazy var headerView: UIView = {
-       let view = UIView()
+        let view = UIView()
         view.backgroundColor = .systemBackground
-       return view
+        return view
     }()
+    
     private lazy var allAssetsCostLabel: UILabel = {
         let label = UILabel()
         label.text = "0"
@@ -25,6 +27,7 @@ final class AllAssetsViewController: UIViewController {
         label.font = .systemFont(ofSize: 40, weight: .regular)
         return label
     }()
+    
     private(set) lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -43,10 +46,12 @@ final class AllAssetsViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         coordinator?.navigationController.setNavigationBarHidden(true, animated: false)
         viewModel.loadDataFromDatabase()
@@ -89,13 +94,13 @@ final class AllAssetsViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             self.allAssetsCostLabel.centerXAnchor.constraint(
-                    equalTo: headerView.centerXAnchor),
+                equalTo: headerView.centerXAnchor),
             self.allAssetsCostLabel.centerYAnchor.constraint(
-                    equalTo: headerView.centerYAnchor),
+                equalTo: headerView.centerYAnchor),
             self.allAssetsCostLabel.widthAnchor.constraint(
-                    equalTo: headerView.widthAnchor, multiplier: 0.5),
+                equalTo: headerView.widthAnchor, multiplier: 0.5),
             self.allAssetsCostLabel.heightAnchor.constraint(
-                    equalTo: headerView.heightAnchor, multiplier: 0.5)
+                equalTo: headerView.heightAnchor, multiplier: 0.5)
         ])
     }
     
@@ -115,9 +120,5 @@ final class AllAssetsViewController: UIViewController {
             self.tableView.trailingAnchor.constraint(
                 equalTo: view.trailingAnchor)
         ])
-    }
-    
-
-
-
+    } 
 }

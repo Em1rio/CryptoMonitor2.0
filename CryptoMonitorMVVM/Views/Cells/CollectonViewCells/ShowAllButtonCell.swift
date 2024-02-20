@@ -13,23 +13,24 @@ final class ShowAllButtonCell: UICollectionViewCell {
     
     // MARK: - UI Components
     private let titleLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.text = "Error"
         return label
     }()
+    
     // MARK: - Configure
     public func configure() {
-       
         self.titleLabel.text = "Show All"
         self.backgroundColor = .systemGray5
         self.setupUI()
     }
+    
     //MARK: - Action
     @objc func showAllButtonTapped() {
         showAllAction?()
-       }
+    }
     
     // MARK: - UI Setup
     private func setupUI() {
@@ -43,9 +44,9 @@ final class ShowAllButtonCell: UICollectionViewCell {
             self.titleLabel.widthAnchor.constraint(equalTo: self.widthAnchor),
         ])
     }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         self.titleLabel.removeFromSuperview()
     }
-    
 }

@@ -46,10 +46,4 @@ extension NumPadButton {
             return .systemGray5
         }
     }
-//    var selectedColor: UIColor? {
-//        switch self {
-//        case .allClear, .decimal, .number:
-//            return .white
-//        }
-//    }
 }

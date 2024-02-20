@@ -12,23 +12,18 @@ final class TabBarController: UITabBarController {
     private let childCoordinators: [Coordinator]
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
-        
+    
     // MARK: - Initialization
     init(childCoordinators: [Coordinator], networkManager: NetworkManagerProtocol, dataBaseManager: DBManagerProtocol) {
-            self.childCoordinators = childCoordinators
-            self.networkManager = networkManager
-            self.dataBaseManager = dataBaseManager
-            super.init(nibName: nil, bundle: nil)
-            configuration()
-        }
-
+        self.childCoordinators = childCoordinators
+        self.networkManager = networkManager
+        self.dataBaseManager = dataBaseManager
+        super.init(nibName: nil, bundle: nil)
+        configuration()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-        }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configuration()
     }
     
     // MARK: - Setup
@@ -42,6 +37,4 @@ final class TabBarController: UITabBarController {
         // Установка вкладок в UITabBarController
         self.viewControllers = [mainViewController, allAssetsViewController]
     }
-
-
 }

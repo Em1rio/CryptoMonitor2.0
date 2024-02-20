@@ -25,25 +25,19 @@ extension AllAssetsViewController: UITableViewDataSource, UITableViewDelegate {
             } else {
                 content.secondaryText = "Общее количество: N/A"
             }
-        } else {
-            
         }
-        
         cell.contentConfiguration = content
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
-    //TODO: Обработка нажатия на ячейку
-    // через замыкание передать данные из детейлVC
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let coins = viewModel.coinsAsCategory, !coins.isEmpty {
             let pressedCoin = coins[indexPath.row]
             coordinator?.coordinateToDetail(with: pressedCoin.nameCoin)
-            
         }
-        
     }
     
 }

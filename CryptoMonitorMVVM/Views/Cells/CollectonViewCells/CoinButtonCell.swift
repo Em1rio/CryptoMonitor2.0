@@ -14,19 +14,18 @@ final class CoinButtonCell: UICollectionViewCell {
     
     // MARK: - UI Components
     private let titleLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 20, weight: .regular)
         label.text = "Error"
         return label
     }()
+    
     // MARK: - Configure
     public func configure(with quickAccessButtons: QuickAccessCoins) {
         self.quickAccessButtons = quickAccessButtons
         self.titleLabel.text = quickAccessButtons.nameCoin
         self.backgroundColor = .systemGray5
-        
-     
         self.setupUI()
     }
     // MARK: - UI Setup
@@ -41,6 +40,7 @@ final class CoinButtonCell: UICollectionViewCell {
             self.titleLabel.widthAnchor.constraint(equalTo: self.widthAnchor),
         ])
     }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         self.titleLabel.removeFromSuperview()

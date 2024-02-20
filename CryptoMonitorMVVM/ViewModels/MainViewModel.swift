@@ -20,7 +20,6 @@ final class MainViewModel {
     private(set) var cellDataSource: Observable<[QuickAccessCoins]> = Observable([])
     private(set) var quickAccessCoins: [QuickAccessCoins]?
     private(set) var quickAccessCoinsCells: [QuickAccessCoins] = []
-
     
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
@@ -30,9 +29,7 @@ final class MainViewModel {
         loadQuickAccessCoins()
     }
     
-    
     // MARK: - CollectionView DataSourse Array
-    //TODO: Изменять цвет при нажатии и возврат обратно
     let numPadButtonCells: [NumPadButton] = [
         .number(7), .number(8), .number(9),
         .number(4), .number(5), .number(6),
@@ -71,11 +68,10 @@ final class MainViewModel {
         quickAccessCoinsCells = updatedCoins // Обновление основного массива
         cellDataSource.value = updatedCoins // Обновление данных для обновления UI
         dataBaseManager.saveQuickAccessCoinsToUserDefaults(updatedCoins)
-        
     }
+    
     func updateQuickAccessCoins(newCoin: QuickAccessCoins) -> [QuickAccessCoins] {
         var updatedCoins = quickAccessCoinsCells
-        
         if let existingIndex = updatedCoins.firstIndex(where: { $0.nameCoin == newCoin.nameCoin }) {
             let existingCoin = updatedCoins.remove(at: existingIndex)
             updatedCoins.insert(existingCoin, at: 0)
@@ -125,7 +121,5 @@ final class MainViewModel {
             }
         }
     }
-    
-    
     
 }

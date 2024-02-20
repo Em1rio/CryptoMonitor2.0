@@ -15,7 +15,7 @@ final class NumberPadCell: UICollectionViewCell {
     
     // MARK: - UI Components
     private let titleLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 40, weight: .regular)
         label.text = "Error"
@@ -36,8 +36,7 @@ final class NumberPadCell: UICollectionViewCell {
         }
         self.setupUI()
     }
-
-
+    
     // MARK: - UI Setup
     private func setupUI() {
         self.addSubview(titleLabel)
@@ -50,6 +49,7 @@ final class NumberPadCell: UICollectionViewCell {
             self.titleLabel.widthAnchor.constraint(equalTo: self.widthAnchor),
         ])
     }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         self.titleLabel.removeFromSuperview()
