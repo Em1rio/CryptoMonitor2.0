@@ -9,22 +9,24 @@ import Foundation
 import RealmSwift
 
 protocol DBManagerProtocol {
+    //Methods for All Coins Screen
     func saveDataFromApi(_ data: AllCoinsDBModel)
     func fetchFromDatabase() -> [AllCoinsDBModel]?
-    func getRealmQuery<T: Object, V: CVarArg>(forType type: T.Type, where attributeName: String, equals value: V) -> Results<T>
+    //Methods for Main Screen
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128)
     func saveQuickAccessCoinsToUserDefaults(_ coins: [QuickAccessCoins])
     func loadQuickAccessCoinsFromUserDefaults() -> [QuickAccessCoins]
+    //Methods for All Assets & Detail Screen
     func getObject<T: Object>(ofType type: T.Type) -> Results<T>
+    func getRealmQuery<T: Object, V: CVarArg>(forType type: T.Type, where attributeName: String, equals value: V) -> Results<T>
     func addAndDeleteRealmData(_ buyings: EveryBuying, _ category: CoinCategory)
-    
 }
 
 struct DBManager: DBManagerProtocol {
     // MARK: - Variables
-    
     private(set) var realm: Realm
     private let quickAccessCoinsKey = "QuickAccessCoinsKey"
+    
     // MARK: - Init
     init() {
         // Инициализация Realm
@@ -34,15 +36,11 @@ struct DBManager: DBManagerProtocol {
     }
     
     //MARK: - Methods for All Coins Screen
-    /// Сохраняет данные из API в базу данных.
-    ///
-    /// - Parameter data: Данные типа `AllCoinsDBModel` для сохранения в базе данных.
-    ///
-    /// - Note: Этот метод используется для сохранения данных из API в базе данных Realm.
-    ///         Он принимает данные типа `AllCoinsDBModel` и сохраняет их в базе данных Realm.
+    /// Дает доступ к сохранению данных в баху данных Realm
     func saveDataFromApi(_ data: AllCoinsDBModel){
         saveData(data)
     }
+    
     /// Сохраняет данные в базе данных Realm.
     ///
     /// - Parameter data: Данные типа `AllCoinsDBModel` для сохранения в базе данных.
@@ -60,14 +58,11 @@ struct DBManager: DBManagerProtocol {
     }
     
     /// Дает доступ к извлечению данных о списке всех монет из базы данных Realm.
-    ///
-    /// - Returns: Массив объектов типа `AllCoinsDBModel` или `nil`, если база данных пуста.
-    ///
-    /// - Note: Этот  метод дает доступ к извлечению данных о списке всех монет из базы данных Realm.
-    ///         Возвращает массив объектов `AllCoinsDBModel` или `nil`, если база данных пуста.
+
     func fetchFromDatabase() -> [AllCoinsDBModel]? {
         fetchData()
     }
+    
     /// Извлекает данные о всех монетах из базы данных Realm.
     ///
     /// - Returns: Массив объектов типа `AllCoinsDBModel` или `nil`, если база данных пуста.
@@ -81,7 +76,6 @@ struct DBManager: DBManagerProtocol {
     
     
     //MARK: - Methods for Main Screen
-    
     
     /// Метод для записи транзакции в базу данных
     /// - Parameters:
@@ -98,58 +92,13 @@ struct DBManager: DBManagerProtocol {
     ///         в зависимости от типа транзакции и сохраняет данные в базе данных Realm.
     func addTransactionToDatabase(isPurchase: Bool, coinId: String, coinTiker: String, coinsName: String, transaction: String, howManyValue: Decimal128, costValue: Decimal128) {
         let value = EveryBuying(value: ["\(coinsName)", transaction, howManyValue, costValue])
-        
         do {
             try realm.write {
                 if let parentCategory = realm.object(ofType: CoinCategory.self, forPrimaryKey: coinId) {
-                    // Объект с таким Primary Key уже существует, обновляем его
-                    var currentCoinQuantity = parentCategory.coinQuantity ?? Decimal128(0)
-                    var currentTotalSpend = parentCategory.totalSpend ?? Decimal128(0)
-                    
-                    if isPurchase {
-                        currentCoinQuantity = currentCoinQuantity + howManyValue
-                        currentTotalSpend = currentTotalSpend + (howManyValue * costValue)
-                    } else {
-                        guard currentCoinQuantity != 0 else {
-                            print("Ошибка: Количество монет не может быть отрицательным.")
-                            //TODO: Подать сигнал об ошибке пользователю
-                            return
-                        }
-                        
-                        currentCoinQuantity = currentCoinQuantity - howManyValue
-                        currentTotalSpend = currentTotalSpend - (howManyValue * costValue)
-                    }
-                    
-                    parentCategory.coinQuantity = currentCoinQuantity
-                    parentCategory.totalSpend = currentTotalSpend
-                    
-                    // Добавляем транзакцию в список coins
-                    parentCategory.coins.append(value)
-                    
-                    realm.add(parentCategory, update: .all)
-                    realm.add(value)
+                    updateExistingCategory(parentCategory, isPurchase, howManyValue, costValue, value)
                 } else {
-                    // Объект с таким Primary Key не существует, создаем новый
-                    let parentCategory = CoinCategory()
-                    parentCategory._id = coinId
-                    parentCategory.symbol = coinTiker
-                    parentCategory.nameCoin = coinsName
-                    
-                    if isPurchase {
-                        parentCategory.coinQuantity = howManyValue
-                        parentCategory.totalSpend = howManyValue * costValue
-                    } else {
-                        guard parentCategory.coinQuantity != nil else {
-                            print("Ошибка: Количество монет не может быть отрицательным.")
-                    //TODO: Подать сигнал об ошибке пользователю
-                            return
-                        }
-                    }
-                    // Добавляем транзакцию в список coins
-                    parentCategory.coins.append(value)
-                    
-                    realm.add(parentCategory)
-                    realm.add(value)
+                    createNewCategory(
+                        coinId, coinTiker, coinsName, isPurchase, howManyValue, costValue, value)
                 }
             }
         } catch {
@@ -157,30 +106,50 @@ struct DBManager: DBManagerProtocol {
             print("Error writing to database: \(error)")
         }
     }
-   
-    func addAndDeleteRealmData(_ buyings: EveryBuying, _ category: CoinCategory) {
-        guard var totalQuantity = category.coinQuantity,
-              var totalSpend = category.totalSpend,
-              let quantityInTransaction = buyings.quantity,
-              let transactionCost = buyings.price else { return }
-        let transactionType = buyings.transaction
-        do {
-            try realm.write {
-               if transactionType == "Продажа" {
-                   totalQuantity += quantityInTransaction
-                   totalSpend += (quantityInTransaction * transactionCost)
-               } else {
-                   totalQuantity -= quantityInTransaction
-                   totalSpend -= (quantityInTransaction * transactionCost)
-               }
-            category.coinQuantity = totalQuantity
-            category.totalSpend = totalSpend
-            realm.delete(buyings)
-            realm.add(category, update: .all)
-           }
-        } catch {
-            print("Ошибка записи в Realm: \(error.localizedDescription)")
+    
+    private func updateExistingCategory(_ parentCategory: CoinCategory, _ isPurchase: Bool, _ howManyValue: Decimal128, _ costValue: Decimal128, _ value: EveryBuying) {
+        var currentCoinQuantity = parentCategory.coinQuantity ?? Decimal128(0)
+        var currentTotalSpend = parentCategory.totalSpend ?? Decimal128(0)
+        if isPurchase {
+            currentCoinQuantity += howManyValue
+            currentTotalSpend += (howManyValue * costValue)
+        } else {
+            guard currentCoinQuantity != 0 else {
+                print("Ошибка: Количество монет не может быть отрицательным.")
+                //TODO: Подать сигнал об ошибке пользователю
+                return
+            }
+            currentCoinQuantity -= howManyValue
+            currentTotalSpend -= (howManyValue * costValue)
         }
+        parentCategory.coinQuantity = currentCoinQuantity
+        parentCategory.totalSpend = currentTotalSpend
+        // Добавляем транзакцию в список coins
+        parentCategory.coins.append(value)
+        realm.add(parentCategory, update: .all)
+        realm.add(value)
+    }
+    
+    private func createNewCategory(_ coinId: String, _ coinTiker: String, _ coinsName: String, _ isPurchase: Bool, _ howManyValue: Decimal128, _ costValue: Decimal128, _ value: EveryBuying) {
+        let parentCategory = CoinCategory()
+        parentCategory._id = coinId
+        parentCategory.symbol = coinTiker
+        parentCategory.nameCoin = coinsName
+        
+        if isPurchase {
+            parentCategory.coinQuantity = howManyValue
+            parentCategory.totalSpend = howManyValue * costValue
+        } else {
+            guard parentCategory.coinQuantity != nil else {
+                print("Ошибка: Количество монет не может быть отрицательным.")
+                //TODO: Подать сигнал об ошибке пользователю
+                return
+            }
+        }
+        // Добавляем транзакцию в список coins
+        parentCategory.coins.append(value)
+        realm.add(parentCategory)
+        realm.add(value)
     }
     
     /// Сохраняет список быстрого доступа к монетам в пользовательских настройках.
@@ -195,6 +164,7 @@ struct DBManager: DBManagerProtocol {
             UserDefaults.standard.set(encoded, forKey: "QuickAccessCoins")
         }
     }
+    
     /// Загружает список быстрого доступа к монетам из пользовательских настроек.
     ///
     /// - Returns: Список объектов типа `QuickAccessCoins`, загруженный из пользовательских настроек.
@@ -225,7 +195,6 @@ struct DBManager: DBManagerProtocol {
         ]
     }
     
-    
     //MARK: - Methods for All Assets & Detail Screen
     /// Получает объекты определенного типа из базы данных Realm.
     ///
@@ -255,6 +224,42 @@ struct DBManager: DBManagerProtocol {
         return realmQuery
     }
     
+    func addAndDeleteRealmData(_ buyings: EveryBuying, _ category: CoinCategory) {
+        let (updatedQuantity, updatedSpend) = calculateUpdatedValues(for: category, with: buyings)
+        do {
+            try realm.write {
+                category.coinQuantity = updatedQuantity
+                category.totalSpend = updatedSpend
+                realm.delete(buyings)
+                realm.add(category, update: .all)
+                // Проверяем, остались ли записи в EveryBuying для данной категории
+                let remainingBuyings = realm.objects(EveryBuying.self).filter("coin == %@", category.nameCoin)
+                if remainingBuyings.isEmpty {
+                    // Если не осталось записей, удаляем категорию из CoinCategory
+                    realm.delete(category)
+                }
+            }
+        } catch {
+            print("Ошибка записи в Realm: \(error.localizedDescription)")
+        }
+    }
     
+    private func calculateUpdatedValues(for category: CoinCategory, with buyings: EveryBuying) -> (Decimal128, Decimal128) {
+        guard var totalQuantity = category.coinQuantity, var totalSpend = category.totalSpend else {
+            return (Decimal128(0), Decimal128(0))
+        }
+        let quantityInTransaction = buyings.quantity ?? Decimal128(0)
+        let transactionCost = buyings.price ?? Decimal128(0)
+        let transactionType = buyings.transaction
+        
+        if transactionType == "Продажа" {
+            totalQuantity += quantityInTransaction
+            totalSpend += (quantityInTransaction * transactionCost)
+        } else {
+            totalQuantity -= quantityInTransaction
+            totalSpend -= (quantityInTransaction * transactionCost)
+        }
+        return (totalQuantity, totalSpend)
+    }
     
 }
