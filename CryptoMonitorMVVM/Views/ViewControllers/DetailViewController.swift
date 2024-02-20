@@ -11,94 +11,116 @@ final class DetailViewController: UIViewController {
     // MARK: - Variables
     private(set) var viewModel: DetailViewModel
     weak var coordinator: DetailCoordinator?
-
+    
     // MARK: - UI Components
     private lazy var displayView: UIView = {
         return createCustomView(withBackgroundColor: .systemBackground)
     }()
+    
     private lazy var detailsView: UIView = {
         return createCustomView(withBackgroundColor: .systemBackground)
     }()
+    
     private lazy var averagePriceView: UIView = {
         return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
+    
     private lazy var changeOverTimeView: UIView = {
         return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
+    
     private lazy var changePerDayView: UIView = {
         return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
+    
     private lazy var marketPriceView: UIView = {
         return createCustomView(withBackgroundColor: .secondarySystemBackground, cornerRadius: 16)
     }()
-
+    
     private lazy var numberOfCoinsLabel: UILabel = {
         return createLabel(withText: "0", fontSize: 30)
     }()
+    
     private lazy var coinsValueLabel: UILabel = {
         return createLabel(withText: "N/A", fontSize: 20)
     }()
-
+    
     private lazy var averagePriceLabel: UILabel = {
         return createLabel(withText: "N/A", fontSize: 15)
     }()
+    
     private lazy var changeOverTimeLabel: UILabel = {
         return createLabel(withText: "N/A", fontSize: 15)
     }()
+    
     private lazy var marketPriceLabel: UILabel = {
         return createLabel(withText: "N/A", fontSize: 15)
     }()
+    
     private lazy var changePerDayLabel: UILabel = {
         return createLabel(withText: "N/A", fontSize: 15)
     }()
-    
     
     private(set) lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(TransactionCell.self, forCellReuseIdentifier: TransactionCell.identifire)
         return tableView
     }()
+    
     // MARK: - Lifecycle
     init(_ viewModel: DetailViewModel, coordinator: DetailCoordinator) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         coordinator?.navigationController.setNavigationBarHidden(false, animated: false)
         viewModel.getDetailData()
         viewModel.callTableView = { [weak self] in
             self?.tableView.reloadData()
         }
+        
         viewModel.callBalanceAndOtherDBLabels = { [weak self] quantity, avrgPrice in
             DispatchQueue.main.async {
                 self?.numberOfCoinsLabel.text = quantity
                 self?.averagePriceLabel.text = avrgPrice
             }
-            
         }
+        
         viewModel.callMarketDataLabels = { [weak self] totalCost, marketPrice, changeOverTime, changePerDay in
             DispatchQueue.main.async {
-                self?.coinsValueLabel.text = totalCost
-                self?.marketPriceLabel.text = marketPrice
-                self?.changeOverTimeLabel.text = changeOverTime + " %"
-                self?.changePerDayLabel.text = changePerDay + " %"
+                // Проверяем и используем значения, только если они не равны nil
+                if let totalCost = totalCost {
+                    self?.coinsValueLabel.text = totalCost
+                }
+                if let marketPrice = marketPrice {
+                    self?.marketPriceLabel.text = marketPrice
+                }
+                if let changeOverTime = changeOverTime {
+                    self?.changeOverTimeLabel.text = changeOverTime + " %"
+                }
+                if let changePerDay = changePerDay {
+                    self?.changePerDayLabel.text = changePerDay + " %"
+                }
             }
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
-
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.navigationController.setNavigationBarHidden(true, animated: false)
+        coordinator?.didFinish()
     }
+    
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = .systemBackground
@@ -106,8 +128,8 @@ final class DetailViewController: UIViewController {
         setupLabels()
         setupTableView()
     }
+    
     private func setupViews() {
-        
         self.view.addSubview(displayView)
         self.displayView.addSubview(detailsView)
         self.detailsView.addSubview(averagePriceView)
@@ -126,34 +148,34 @@ final class DetailViewController: UIViewController {
         stackView.axis = .vertical // Ось вертикальная для создания 2 ряда
         stackView.distribution = .fillEqually // Равномерное заполнение по вертикали
         stackView.spacing = 8 // Отступ между view
-
+        
         // Создание верхнего ряда StackView
         let topRowStackView = UIStackView()
         topRowStackView.axis = .horizontal // Ось горизонтальная для создания 2 столбцов
         topRowStackView.distribution = .fillEqually // Равномерное заполнение по горизонтали
         topRowStackView.spacing = 8 // Отступ между view в ряду
-
+        
         // Добавление view в верхний ряд StackView
         topRowStackView.addArrangedSubview(averagePriceView)
         topRowStackView.addArrangedSubview(changeOverTimeView)
-
+        
         // Создание нижнего ряда StackView
         let bottomRowStackView = UIStackView()
         bottomRowStackView.axis = .horizontal // Ось горизонтальная для создания 2 столбцов
         bottomRowStackView.distribution = .fillEqually // Равномерное заполнение по горизонтали
         bottomRowStackView.spacing = 8 // Отступ между view в ряду
-
+        
         // Добавление view в нижний ряд StackView
         bottomRowStackView.addArrangedSubview(marketPriceView)
         bottomRowStackView.addArrangedSubview(changePerDayView)
-
+        
         // Добавление верхнего и нижнего рядов в главный StackView
         stackView.addArrangedSubview(topRowStackView)
         stackView.addArrangedSubview(bottomRowStackView)
-
+        
         // Добавление StackView на detailsView
         detailsView.addSubview(stackView)
-            stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             self.displayView.topAnchor.constraint(
@@ -165,20 +187,24 @@ final class DetailViewController: UIViewController {
             self.displayView.heightAnchor.constraint(
                 equalTo: self.view.heightAnchor, multiplier: 0.3),
             
-            self.detailsView.centerXAnchor.constraint(equalTo: self.displayView.centerXAnchor),
-            self.detailsView.bottomAnchor.constraint(equalTo: self.displayView.bottomAnchor, constant: -10),
-            self.detailsView.leadingAnchor.constraint(equalTo: self.displayView.leadingAnchor, constant: 10),
-            self.detailsView.trailingAnchor.constraint(equalTo: self.displayView.trailingAnchor, constant: -10),
-            self.detailsView.heightAnchor.constraint(equalTo: self.displayView.heightAnchor, multiplier: 0.55),
+            self.detailsView.centerXAnchor.constraint(
+                equalTo: self.displayView.centerXAnchor),
+            self.detailsView.bottomAnchor.constraint(
+                equalTo: self.displayView.bottomAnchor, constant: -10),
+            self.detailsView.leadingAnchor.constraint(
+                equalTo: self.displayView.leadingAnchor, constant: 10),
+            self.detailsView.trailingAnchor.constraint(
+                equalTo: self.displayView.trailingAnchor, constant: -10),
+            self.detailsView.heightAnchor.constraint(
+                equalTo: self.displayView.heightAnchor, multiplier: 0.55),
             
             stackView.topAnchor.constraint(equalTo: detailsView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: detailsView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: detailsView.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: detailsView.bottomAnchor)
-                
         ])
-    
     }
+    
     private func setupLabels() {
         let descriptionAveragePriceLabel = createLabel(
             withText: " Средняя цена", fontSize: 12, textColor: .systemGray)
@@ -188,7 +214,6 @@ final class DetailViewController: UIViewController {
             withText: "Рыночная цена", fontSize: 12, textColor: .systemGray)
         let desctiptionChangePerDayLabel = createLabel(
             withText: "Изм. за 24 часа", fontSize: 12, textColor: .systemGray)
-        
         
         self.displayView.addSubview(numberOfCoinsLabel)
         self.displayView.addSubview(coinsValueLabel)
@@ -217,14 +242,16 @@ final class DetailViewController: UIViewController {
         descriptionMarketPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         desctiptionChangePerDayLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        
-        
         NSLayoutConstraint.activate([
-            self.numberOfCoinsLabel.centerXAnchor.constraint(equalTo: self.displayView.centerXAnchor),
-            self.numberOfCoinsLabel.topAnchor.constraint(equalTo: self.displayView.topAnchor, constant: 10),
+            self.numberOfCoinsLabel.centerXAnchor.constraint(
+                equalTo: self.displayView.centerXAnchor),
+            self.numberOfCoinsLabel.topAnchor.constraint(
+                equalTo: self.displayView.topAnchor, constant: 10),
             
-            self.coinsValueLabel.topAnchor.constraint(equalTo: self.numberOfCoinsLabel.bottomAnchor, constant: 5),
-            self.coinsValueLabel.centerXAnchor.constraint(equalTo: self.displayView.centerXAnchor),
+            self.coinsValueLabel.topAnchor.constraint(
+                equalTo: self.numberOfCoinsLabel.bottomAnchor, constant: 5),
+            self.coinsValueLabel.centerXAnchor.constraint(
+                equalTo: self.displayView.centerXAnchor),
             
             descriptionAveragePriceLabel.centerXAnchor.constraint(
                 equalTo: self.averagePriceView.centerXAnchor),
@@ -242,30 +269,29 @@ final class DetailViewController: UIViewController {
                 equalTo: self.changeOverTimeView.topAnchor, constant: 7),
             
             self.changeOverTimeLabel.topAnchor.constraint(equalTo: descriptionAveragePriceLabel.bottomAnchor, constant: 5),
-            self.changeOverTimeLabel.centerXAnchor.constraint(equalTo: self.changeOverTimeView.centerXAnchor),
+            self.changeOverTimeLabel.centerXAnchor.constraint(
+                equalTo: self.changeOverTimeView.centerXAnchor),
             
             descriptionMarketPriceLabel.centerXAnchor.constraint(
                 equalTo: self.marketPriceView.centerXAnchor),
             descriptionMarketPriceLabel.topAnchor.constraint(
                 equalTo: self.marketPriceView.topAnchor, constant: 7),
             
-            self.marketPriceLabel.topAnchor.constraint(equalTo: descriptionMarketPriceLabel.bottomAnchor, constant: 5),
-            self.marketPriceLabel.centerXAnchor.constraint(equalTo: self.marketPriceView.centerXAnchor),
+            self.marketPriceLabel.topAnchor.constraint(
+                equalTo: descriptionMarketPriceLabel.bottomAnchor, constant: 5),
+            self.marketPriceLabel.centerXAnchor.constraint(
+                equalTo: self.marketPriceView.centerXAnchor),
             
             desctiptionChangePerDayLabel.centerXAnchor.constraint(
                 equalTo: self.changePerDayView.centerXAnchor),
             desctiptionChangePerDayLabel.topAnchor.constraint(
                 equalTo: self.changePerDayView.topAnchor, constant: 7),
             
-            self.changePerDayLabel.topAnchor.constraint(equalTo: desctiptionChangePerDayLabel.bottomAnchor, constant: 5),
-            self.changePerDayLabel.centerXAnchor.constraint(equalTo: self.changePerDayView.centerXAnchor),
-
-
-            
+            self.changePerDayLabel.topAnchor.constraint(
+                equalTo: desctiptionChangePerDayLabel.bottomAnchor, constant: 5),
+            self.changePerDayLabel.centerXAnchor.constraint(
+                equalTo: self.changePerDayView.centerXAnchor),
         ])
-        
-        
-        
     }
     
     private func setupTableView() {
@@ -293,8 +319,8 @@ final class DetailViewController: UIViewController {
         label.textAlignment = .center
         label.textColor = textColor
         return label
-        
     }
+    
     private func createCustomView(withBackgroundColor backgroundColor: UIColor, cornerRadius: CGFloat = 0) -> UIView {
         let customView = UIView()
         customView.backgroundColor = backgroundColor
@@ -302,5 +328,4 @@ final class DetailViewController: UIViewController {
         customView.layer.masksToBounds = cornerRadius > 0
         return customView
     }
-
 }
