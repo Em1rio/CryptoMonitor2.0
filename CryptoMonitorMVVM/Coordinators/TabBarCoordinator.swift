@@ -31,15 +31,20 @@ final class TabBarCoordinator: Coordinator {
             navigationController, networkManager, dataBaseManager)
         mainCoordinator.parentCoordinator = self
         allAssetsCoordinator.parentCoordinator = self
+        var imageName = ""
+        if #available(iOS 16, *) {
+            imageName = "bitcoinsign"
+        } else {
+            imageName = "bitcoinsign.square.fill"
+        }
         
-        
-        let mainTab = UITabBarItem(title: "Запись", image: UIImage(systemName: "entry.lever.keypad"), tag: 0)
+        let mainTab = UITabBarItem(title: "Запись", image: UIImage(systemName: "square.grid.3x3.bottomright.filled"), tag: 0)
         let mainViewModel = MainViewModel(networkManager, dataBaseManager)
         let mainVC = MainViewController(mainViewModel, coordinator: mainCoordinator)
         mainVC.tabBarItem = mainTab
         mainCoordinator.start()
         
-        let allAssetsTab = UITabBarItem(title: "Кошелёк", image: UIImage(systemName: "bitcoinsign"), tag: 1)
+        let allAssetsTab = UITabBarItem(title: "Кошелёк", image: UIImage(systemName: "\(imageName)"), tag: 1)
         let allAssetsViewModel = AllAssetsViewModel(networkManager, dataBaseManager)
         let allAssetsVC = AllAssetsViewController(allAssetsViewModel, coordinator: allAssetsCoordinator)
         allAssetsVC.tabBarItem = allAssetsTab
