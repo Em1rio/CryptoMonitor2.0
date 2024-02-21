@@ -19,7 +19,8 @@ Crypto Monitor позволяет вести учет покупок и прод
 
 Язык: Swift
 
-Crypto Monitor2.0 это вторая версия моего приложения. Ключевое отличие от первой версии, что оно написано в соответсвии с паттерном MVVM + Coordinator с использованием следующих фреймворков:
+Crypto Monitor2.0 это вторая версия моего приложения. Ключевое отличие от первой версии, что оно написано в соответсвии с паттерном MVVM + Coordinator и весь UI сверстан кодом. 
+При написании проекта были использованы следующие фреймворки:
 
 - [UIKit](https://developer.apple.com/documentation/uikit)
 - [Network](https://developer.apple.com/documentation/network)
