@@ -32,8 +32,8 @@ final class TabBarController: UITabBarController {
         let mainViewModel = MainViewModel(networkManager, dataBaseManager)
         let allAssetsViewModel = AllAssetsViewModel(networkManager, dataBaseManager)
         // Создание ViewController для каждой вкладки и связка их с ViewModel
-        let mainViewController = MainViewController(mainViewModel, coordinator:(childCoordinators.first(where: { $0 is MainCoordinator }) as? MainCoordinator)!)
-        let allAssetsViewController = AllAssetsViewController(allAssetsViewModel, coordinator: (childCoordinators.first(where: { $0 is AllAssetsCoordinator }) as? AllAssetsCoordinator)!)
+        let mainViewController = MainViewController(mainViewModel, coordinator:(childCoordinators.first(where: { $0 is MainCoordinator }) as! MainCoordinator))
+        let allAssetsViewController = AllAssetsViewController(allAssetsViewModel, coordinator: (childCoordinators.first(where: { $0 is AllAssetsCoordinator }) as! AllAssetsCoordinator))
         // Установка вкладок в UITabBarController
         self.viewControllers = [mainViewController, allAssetsViewController]
     }
