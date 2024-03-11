@@ -102,11 +102,15 @@ final class DetailViewController: UIViewController {
                     self?.marketPriceLabel.text = marketPrice
                 }
                 if let changeOverTime = changeOverTime {
+                    
                     self?.changeOverTimeLabel.text = changeOverTime + " %"
+                    self?.changeOverTimeLabel.setTextColorBasedOnValue(changeOverTime)
                 }
                 if let changePerDay = changePerDay {
                     self?.changePerDayLabel.text = changePerDay + " %"
+                    self?.changePerDayLabel.setTextColorBasedOnValue(changePerDay)
                 }
+                
             }
         }
     }

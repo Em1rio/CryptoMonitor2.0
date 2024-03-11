@@ -28,6 +28,14 @@ final class AllAssetsViewController: UIViewController {
         return label
     }()
     
+    private lazy var allTimeChangeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "0"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 15, weight: .regular)
+        return label
+    }()
+    
     private(set) lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -58,10 +66,12 @@ final class AllAssetsViewController: UIViewController {
         viewModel.callTableView = { [weak self] in
             self?.tableView.reloadData()
         }
-        viewModel.fetchDataFromDB()
-        viewModel.callBalanceLabel = { [weak self] totalCost in
+        viewModel.updateLabelsData()
+        viewModel.callBalanceLabel = { [weak self] totalCost, moneyProfit, percentDifference in
             DispatchQueue.main.async {
                 self?.allAssetsCostLabel.text = totalCost
+                self?.allTimeChangeLabel.text = "\(moneyProfit) | \(percentDifference) %"
+                self?.allTimeChangeLabel.setTextColorBasedOnValue(percentDifference)                   
             }
         }
     }
@@ -70,7 +80,7 @@ final class AllAssetsViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         setupHeaderView()
-        setupAllAssetsCostLabel()
+        setupLabels()
         setupTableView()
     }
     
@@ -84,13 +94,15 @@ final class AllAssetsViewController: UIViewController {
                 equalTo: view.leadingAnchor),
             self.headerView.trailingAnchor.constraint(
                 equalTo: view.trailingAnchor),
-            self.headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2)
+            self.headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1)
         ])
     }
     
-    private func setupAllAssetsCostLabel() {
+    private func setupLabels() {
         self.headerView.addSubview(allAssetsCostLabel)
         self.allAssetsCostLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.headerView.addSubview(allTimeChangeLabel)
+        self.allTimeChangeLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             self.allAssetsCostLabel.centerXAnchor.constraint(
@@ -100,7 +112,12 @@ final class AllAssetsViewController: UIViewController {
             self.allAssetsCostLabel.widthAnchor.constraint(
                 equalTo: headerView.widthAnchor, multiplier: 0.5),
             self.allAssetsCostLabel.heightAnchor.constraint(
-                equalTo: headerView.heightAnchor, multiplier: 0.5)
+                equalTo: headerView.heightAnchor, multiplier: 0.5),
+            
+            self.allTimeChangeLabel.topAnchor.constraint(equalTo: self.allAssetsCostLabel.bottomAnchor),
+            self.allTimeChangeLabel.centerXAnchor.constraint(equalTo: self.allAssetsCostLabel.centerXAnchor),
+            self.allTimeChangeLabel.widthAnchor.constraint(equalTo: self.allAssetsCostLabel.widthAnchor, multiplier: 0.9),
+            self.allTimeChangeLabel.heightAnchor.constraint(equalTo: self.allAssetsCostLabel.heightAnchor, multiplier: 0.5)
         ])
     }
     

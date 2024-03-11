@@ -13,9 +13,12 @@ final class AllAssetsViewModel {
     private let networkManager: NetworkManagerProtocol
     private let dataBaseManager: DBManagerProtocol
     private var totalCost: Decimal128 = 0.0
+    private var initialTotalCost: Decimal128 = 0.0
     private(set) var coinsAsCategory: Results<CoinCategory>?
     var callTableView: (()-> Void)?
-    var callBalanceLabel: ((_ totalCost: String) -> Void)?
+    var callBalanceLabel: ((_ totalCost: String,
+                            _ moneyProfit: String,
+                            _ percentDifference: String) -> Void)?
     
     // MARK: - Lifecycle
     init(_ networkManager: NetworkManagerProtocol,
@@ -36,10 +39,18 @@ final class AllAssetsViewModel {
         callTableView?()
     }
     
-    //MARK: - Update All Assets Cost Label
-    func fetchDataFromDB() {
-        totalCost = 0.0
+    //MARK: - Update All Assets Cost & All Time Change Labels
+    func updateLabelsData() {
+        fetchDataFromDB()
+    }
+    private func fetchDataFromDB() {
         guard let coins = coinsAsCategory?.toArray(ofType: CoinCategory.self) as? [CoinCategory] else {return}
+        prepareAllAssetsCostData(with: coins)
+        
+    }
+    
+    private func prepareAllAssetsCostData(with coins: [CoinCategory]) {
+        totalCost = 0.0
         var compleatedIterations = 0
         for item in coins {
             fetchData(for: item) {
@@ -48,14 +59,36 @@ final class AllAssetsViewModel {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         let formattedTotalCost = Formatter.shared.format("\(self.totalCost)", format: .currencyShort)
-                        self.updateUI(with: formattedTotalCost)
+                        let profitInfo = prepareAllTimeChangeData(with: coins)
+                        self.updateUI(with: formattedTotalCost, and: profitInfo)
                     }
                 }
             }
-            
         }
     }
-    
+    private func prepareAllTimeChangeData(with coins: [CoinCategory]) -> (String, String) {
+        initialTotalCost = 0.0
+        for item in coins {
+            calculateInitialCostOfAssets(for: item)
+        }
+        let percentDifference: Decimal128
+        var difference: Decimal128 = 0
+        if initialTotalCost != 0 {
+            percentDifference = ((totalCost - initialTotalCost) / initialTotalCost) * 100
+            difference = totalCost - initialTotalCost
+        } else {
+            percentDifference = 0
+        }
+        let formatedPercent = Formatter.shared.format("\(percentDifference)", format: .percent)
+        let profit = Formatter.shared.format("\(difference)", format: .currencyShort)
+        return (formatedPercent, profit)
+    }
+    private func calculateInitialCostOfAssets(for item: CoinCategory) {
+        guard let totalSpend = item.totalSpend  else {return}
+        self.initialTotalCost += totalSpend
+        
+        
+    }
     
     
     private func fetchData(for item: CoinCategory, completion: @escaping () -> Void) {
@@ -65,7 +98,7 @@ final class AllAssetsViewModel {
             case .success(let coinData):
                 do {
                     let coin = try JSONDecoder().decode([OneCoin].self, from: coinData)
-                    self.coinsData(coin, for: item)
+                    self.coinsData(coin)
                 } catch {
                     print("Failed to decode coin data with error: \(error)")
                 }
@@ -79,15 +112,11 @@ final class AllAssetsViewModel {
     
     
     
-    private func coinsData(_ coin: [OneCoin] , for item: CoinCategory) {
+    private func coinsData(_ coin: [OneCoin]) {
         let priceRightNow = try! Decimal128(string: coin.first?.priceUsd ?? "0")
         DispatchQueue.main.async { [weak self] in
             guard let self = self, let coinID = coin.first?.id else { return }
-            let realmQuery = self.dataBaseManager.getRealmQuery(
-                forType: CoinCategory.self,
-                where: "_id",
-                equals: coinID)
-            
+            let realmQuery = getDataFromDB(for: coinID)
             if let quantity = realmQuery.first?.coinQuantity {
                 let rawTotalCost = self.calculateTotalCost(priceRightNow, quantity)
                 self.totalCost += rawTotalCost
@@ -96,16 +125,20 @@ final class AllAssetsViewModel {
             }
         }
     }
+    private func getDataFromDB(for id: String) -> Results<CoinCategory>{
+        let realmQuery = self.dataBaseManager.getRealmQuery(
+            forType: CoinCategory.self,
+            where: "_id",
+            equals: id)
+        return realmQuery
+    }
     
     private func calculateTotalCost(_ price: Decimal128, _ quantity: Decimal128) -> Decimal128 {
         return price * quantity
     }
     
-    private func updateUI(with totalCost: String) {
-        self.callBalanceLabel?(totalCost)
+    private func updateUI(with totalCost: String, and profit: (String, String)) {
+        self.callBalanceLabel?(totalCost, profit.1, profit.0)
+        
     }
 }
-//MARK: - TODO: Список задач
-// Посчитать разницу в стоимости портфеля за все время
-// Сделать возможность отсортировать в алфавитном порядке или по стоимости активов
-

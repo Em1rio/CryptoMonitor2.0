@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D18EE1D2B98896C00A3ACD5 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D18EE1C2B98896C00A3ACD5 /* UILabel.swift */; };
 		9CA8AE5F103747DF8A8B28B4 /* Pods_CryptoMonitorMVVM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6B9B47BA6DE165DBDFC81B8 /* Pods_CryptoMonitorMVVM.framework */; };
 		FD1086C02AE2ABE20034FC1D /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1086BF2AE2ABE20034FC1D /* Observable.swift */; };
 		FD1086C42AE2AD3B0034FC1D /* AllCoinsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1086C32AE2AD3B0034FC1D /* AllCoinsModel.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2D18EE1C2B98896C00A3ACD5 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		A7E9979F9BA421DBD5C80F63 /* Pods-CryptoMonitorMVVM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoMonitorMVVM.release.xcconfig"; path = "Target Support Files/Pods-CryptoMonitorMVVM/Pods-CryptoMonitorMVVM.release.xcconfig"; sourceTree = "<group>"; };
 		C6B9B47BA6DE165DBDFC81B8 /* Pods_CryptoMonitorMVVM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CryptoMonitorMVVM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E388D54B002D19C64E94218C /* Pods-CryptoMonitorMVVM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoMonitorMVVM.debug.xcconfig"; path = "Target Support Files/Pods-CryptoMonitorMVVM/Pods-CryptoMonitorMVVM.debug.xcconfig"; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 				FDBF899C2AEBEAD9000868A7 /* AllAssets+TableView.swift */,
 				FDFABC882B1E06C8008DF1C7 /* Detail+TableView.swift */,
 				FD877BA42B1A0D6D00B859DD /* Results.swift */,
+				2D18EE1C2B98896C00A3ACD5 /* UILabel.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -428,6 +431,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD877BA32B1A0B6500B859DD /* Formatter.swift in Sources */,
+				2D18EE1D2B98896C00A3ACD5 /* UILabel.swift in Sources */,
 				FDBF899D2AEBEAD9000868A7 /* AllAssets+TableView.swift in Sources */,
 				FD1086CA2AE2BABC0034FC1D /* NumberPadCell.swift in Sources */,
 				FD1086C02AE2ABE20034FC1D /* Observable.swift in Sources */,

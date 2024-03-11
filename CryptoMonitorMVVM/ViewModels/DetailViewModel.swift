@@ -121,6 +121,7 @@ final class DetailViewModel {
                 let formattedTotalCost = Formatter.shared.format("\(rawTotalCost)", format: .currency)
                 guard let totalSpend = realmQuery.first?.totalSpend else {
                     let changeOverTime = "N/A"
+                    
                     self.updateMarketDataUI(
                         total: "≈ \(formattedTotalCost)",
                         price: formattedPrice,
@@ -134,12 +135,13 @@ final class DetailViewModel {
                     total: "≈ \(formattedTotalCost)",
                     price: formattedPrice,
                     change: changeOverTime,
-                    change24: coin.first?.percentChange24H ?? "N/A")
+                    change24: self.adjustPercentChangeSymbol(coin.first?.percentChange24H ))
             } else {
                 return
             }
         }
     }
+    
     
     //MARK: - Calculate percentage change over time
     private func calculatePercentageChange(_ price:Decimal128, _ totalSpend: Decimal128, _ quantity: Decimal128 ) -> String {
@@ -216,5 +218,16 @@ final class DetailViewModel {
         getDetailData()
         callTableView?()
     }
-
+    
+    //MARK: - Adjusting percent change symbol
+    private func adjustPercentChangeSymbol(_ percentChange: String?) -> String {
+        guard let percentChangeValue = Double(percentChange ?? "") else { return "N/A" }
+        let formattedPercentChange = Formatter.shared.format("\(percentChangeValue)", format: .percent)
+        if percentChangeValue > 0 {
+            return "+\(formattedPercentChange)"
+        } else {
+            return formattedPercentChange
+        }
+    }
+    
 }

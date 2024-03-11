@@ -30,7 +30,7 @@ final class Formatter {
         case .standard:
             configureNumberFormatter(numberFormatter, style: .decimal, maxDigits: 16)
         case .percent:
-            configureNumberFormatter(numberFormatter, style: .decimal, maxDigits: 2)
+            configureNumberFormatter(numberFormatter, style: .decimal, maxDigits: 5)
         case .currencyShort:
             numberFormatter.locale = Locale(identifier: "es_CL")
             configureNumberFormatter(numberFormatter, style: .currency, maxDigits: 5)
@@ -69,3 +69,4 @@ final class Formatter {
         return formattedValue
     }
 }
+
